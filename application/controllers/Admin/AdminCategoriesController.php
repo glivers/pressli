@@ -1,4 +1,4 @@
-<?php namespace Controllers;
+<?php namespace Controllers\Admin;
 
 /**
  * Categories Controller - Pressli CMS
@@ -28,7 +28,7 @@ use Rackage\Session;
 use Rackage\Redirect;
 use Lib\LibException;
 use Lib\Services\Taxonomy;
-use Controllers\AdminController;
+use Controllers\Admin\AdminController;
 
 class AdminCategoriesController extends AdminController
 {
