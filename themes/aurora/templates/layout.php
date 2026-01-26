@@ -9,10 +9,10 @@
         <link rel="icon" type="image/x-icon" href="{{ $site['favicon'] }}">
     @endif
     @section('styles')
-    <link rel="stylesheet" href="{{Url::assets('themes/aurora/assets/css/style.css')}}">
-    <!--@@if($customCSS)
-            @{{{ $customCSS }}}
-        @@endif -->
+        <link rel="stylesheet" href="{{Url::assets('themes/aurora/assets/css/style.css')}}">
+        <!--@@if($customCSS)
+                @{{{ $customCSS }}}
+            @@endif -->
     @endsection
 </head>
 <body>
