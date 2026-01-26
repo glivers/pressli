@@ -377,7 +377,7 @@ class PageController extends Controller
             'is_archive' => false,
             'is_page' => false,
             'is_404' => false,
-        ];
+        ]; 
 
         // Merge all provider data - templates get exact provider names
         // (primary_menu, post_categories, post_comment_count, recent_posts, etc.)
@@ -561,7 +561,6 @@ class PageController extends Controller
      */
     private function renderArchive($categorySlug = null, $tagSlug = null)
     {
-        //$page = (int) (Input::get('page') ?? 1);
         $page = (int) Input::get('page', 1);
         $perPage = (int) ($this->siteSettings['posts_per_page'] ?? 10);
 
@@ -579,7 +578,7 @@ class PageController extends Controller
         // Filter by category if provided
         if ($categorySlug) {
             $query->innerJoin('post_taxonomies', 'posts.id = post_taxonomies.post_id', [])
-                ->innerJoin('taxonomies', 'post_taxonomies.taxonomy_id = taxonomies.id', [])
+                ->innerJoin('taxonomies', 'post_taxonomies.taxonomy_id = taxonomies.id', ['name as taxonomy_name'])
                 ->where('taxonomies.slug', $categorySlug)
                 ->where('taxonomies.type', 'category');
         }
@@ -587,7 +586,7 @@ class PageController extends Controller
         // Filter by tag if provided
         if ($tagSlug) {
             $query->innerJoin('post_taxonomies', 'posts.id = post_taxonomies.post_id', [])
-                ->innerJoin('taxonomies', 'post_taxonomies.taxonomy_id = taxonomies.id', [])
+                ->innerJoin('taxonomies', 'post_taxonomies.taxonomy_id = taxonomies.id', ['name as taxonomy_name'])
                 ->where('taxonomies.slug', $tagSlug)
                 ->where('taxonomies.type', 'tag');
         }
@@ -595,12 +594,22 @@ class PageController extends Controller
         // Paginate
         $result = $query->paginate($perPage, $page);
 
+        // Find taxonomy name it's an individual category/tags page
+        $taxonomy = null;
+
+        if($categorySlug !== null || $tagSlug !== null){
+            if(count($result['data']) > 0){
+               $taxonomy = $result['data'][0]['taxonomy_name'];
+            }
+        }
+
         // Fetch data via providers
         $context = [];
         $providers = $this->themeConfig->getProviders('archive');
         $providerData = ProviderRegistry::getBatch($providers, $context);
 
         $data = [
+            'taxonomy' => $taxonomy,
             'posts' => $result['data'],
             'site' => [
                 'name' => $this->siteSettings['site_title'] ?? 'Pressli',
