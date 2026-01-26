@@ -1,0 +1,41 @@
+<?php return array(
+    'root' => array(
+        'pretty_version' => '1.0.0+no-version-set',
+        'version' => '1.0.0.0',
+        'type' => 'project',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'reference' => null,
+        'name' => 'glivers/rachie',
+        'dev' => true,
+    ),
+    'versions' => array(
+        'glivers/rachie' => array(
+            'pretty_version' => '1.0.0+no-version-set',
+            'version' => '1.0.0.0',
+            'type' => 'project',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'reference' => null,
+            'dev_requirement' => false,
+        ),
+        'glivers/rackage' => array(
+            'pretty_version' => 'v2.0.0',
+            'version' => '2.0.0.0',
+            'type' => 'package',
+            'install_path' => __DIR__ . '/../glivers/rackage',
+            'aliases' => array(),
+            'reference' => '9f4a5ea7e74134a13a16651b47e929c6cfd9467f',
+            'dev_requirement' => false,
+        ),
+        'glivers/roline' => array(
+            'pretty_version' => 'v2.0.0',
+            'version' => '2.0.0.0',
+            'type' => 'package',
+            'install_path' => __DIR__ . '/../glivers/roline',
+            'aliases' => array(),
+            'reference' => '3d2b4cfbb651994adb094dbe9e407474a15d3f29',
+            'dev_requirement' => false,
+        ),
+    ),
+);

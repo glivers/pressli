@@ -1,0 +1,40 @@
+{
+	"name" : "glivers/rachie",
+	"type" : "project",
+	"description" : "The base foundation for the Rachie  PHP framework",
+	"keywords" : ["rachie", "rachie framework", "rachie-mvc", "php framework", "mvc framework"],
+	"homepage" : "http://github.com/glivers/rachie",
+	"license" : "MIT",
+	"authors" : [
+		{
+			"name" : "Geoffrey Okongo",
+			"email" : "code@rachie.dev",
+			"homepage" : "https://rachie.dev",
+			"role" : "developer"
+		}
+	],
+	"require" : {
+		"php" : ">=8.0.0",
+		"glivers/rackage" : "^2.0",
+		"glivers/roline" : "^2.0"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"Models\\" : "application/models",
+			"Controllers\\" : "application/controllers",
+			"Exceptions\\"  : "system/Exceptions",
+			"Lib\\"  : "application/libraries"
+		}
+	},
+	"scripts" : {
+		"test" : "php phpunit.phar",
+		"test:app" : "php phpunit.phar",
+		"test:rackage" : "php phpunit.phar --configuration vendor/glivers/rackage/phpunit.xml",
+		"test:roline" : "php phpunit.phar --configuration vendor/glivers/roline/phpunit.xml",
+		"test:all" : [
+			"@test:app",
+			"@test:rackage",
+			"@test:roline"
+		]
+	}
+}
