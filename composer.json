@@ -1,9 +1,9 @@
 {
-	"name" : "glivers/rachie",
+	"name" : "glivers/pressli",
 	"type" : "project",
-	"description" : "The base foundation for the Rachie  PHP framework",
-	"keywords" : ["rachie", "rachie framework", "rachie-mvc", "php framework", "mvc framework"],
-	"homepage" : "http://github.com/glivers/rachie",
+	"description" : "Pressli CMS - A modern, lightweight content management system built on the Rachie PHP framework",
+	"keywords" : ["pressli", "cms", "content management", "rachie", "rackage", "php cms", "blog"],
+	"homepage" : "https://pressli.co.ke",
 	"license" : "MIT",
 	"authors" : [
 		{
