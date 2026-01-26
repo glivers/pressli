@@ -36,28 +36,27 @@ return array(
 	 * The URL path becomes a friendly alias for the controller action.
 	 * Additional URL segments after the path become method parameters.
 	 */
-	'blog' => 'Posts',				 // /blog → PostsController
-	'contact' => 'Pages@contact',    // /contact → PagesController::contact()
+	// 'blog' => 'Posts',				 // /blog → PostsController
+	// 'contact' => 'Pages@contact',    // /contact → PagesController::contact()
 
 	// ===========================================================================
-	// COMPOUND ROUTES (2-segment matching)
+	// AUTHENTICATION ROUTES
 	// ===========================================================================
 
-	/**
-	 * Compound routes match two URL segments (e.g., 'admin/users').
-	 * Useful for namespacing admin panels, APIs, or avoiding URL conflicts.
-	 *
-	 * Format: 'segment1/segment2' => 'Controller@method'
-	 *
-	 * Example:
-	 *   Route: 'admin/users' => 'home'
-	 *   URL: /admin/users/search
-	 *   Result: HomeController::search()
-	 *
-	 * Priority: Compound routes are checked BEFORE single-segment routes.
-	 * So 'admin/users' takes precedence over 'admin'.
-	 */
-	//'admin/users' => 'Home',           // Route to HomeController, method from URL
+	'login' => 'auth@login',
+	'logout' => 'auth@logout',
+	'forgot-password' => 'auth@forgot',
+	'reset-password' => 'auth@reset',
+
+	// ===========================================================================
+	// INSTALLATION ROUTES (Auto-mapped, no route definition needed)
+	// ===========================================================================
+
+	// /install          → InstallController::getIndex()
+	// /install/database → InstallController::getDatabase() / postDatabase()
+	// /install/test     → InstallController::postTest() (AJAX)
+	// /install/setup    → InstallController::getSetup() / postSetup()
+	// /install/complete → InstallController::getComplete()
 
 	// ===========================================================================
 	// ROUTES WITH NAMED PARAMETERS
@@ -79,8 +78,8 @@ return array(
 	 *   Access: Input::get('id') returns '123'
 	 */
 
-	'profile' => 'User@show/id',
-	'post' => 'Blog@view/slug',
+	// 'profile' => 'User@show/id',
+	// 'post' => 'Blog@view/slug',
 
 	// ===========================================================================
 	// PATTERN ROUTES (WILDCARD MATCHING)
@@ -112,9 +111,9 @@ return array(
 	 * So 'blog' (exact) is checked before 'blog/*' (pattern).
 	 */
 
-	'blog/*' => 'Blog@show/slug',
-	'products/*' => 'Products@show/slug',
-	'docs/*' => 'Documentation@show/path',
+	// 'blog/*' => 'Blog@show/slug',
+	// 'products/*' => 'Products@show/slug',
+	// 'docs/*' => 'Documentation@show/path',
 
 	// ===========================================================================
 	// URL-BASED ROUTING (NO ROUTES NEEDED)
@@ -144,4 +143,44 @@ return array(
 	 * See controller documentation for more details on HTTP method routing.
 	 */
 
+	// ===========================================================================
+	// COMPOUND ROUTES (2-segment matching)
+	// ===========================================================================
+
+	/**
+	 * Compound routes match two URL segments (e.g., 'admin/users').
+	 * Useful for namespacing admin panels, APIs, or avoiding URL conflicts.
+	 *
+	 * Format: 'segment1/segment2' => 'Controller@method'
+	 *
+	 * Example:
+	 *   Route: 'admin/users' => 'home'
+	 *   URL: /admin/users/search
+	 *   Result: HomeController::search()
+	 *
+	 * Priority: Compound routes are checked BEFORE single-segment routes.
+	 * So 'admin/users' takes precedence over 'admin'.
+	 */
+	'admin/users' 	=> 'AdminUsers',    
+	'admin/pages' 	=> 'AdminPages',    
+	'admin/posts' 	=> 'AdminPosts',    
+	'admin/categories' => 'AdminCategories',    
+	'admin/tags' 	=> 'AdminTags',    
+	'admin/media' 	=> 'AdminMedia',    
+	'admin/comments'=> 'AdminComments',    
+	'admin/menus' 	=> 'AdminMenus',    
+	'admin/themes' 	=> 'AdminThemes',    
+	'admin/plugins' => 'AdminPlugins',    
+	'admin/settings'=> 'AdminSettings',  
+
+	// ============================================================================
+	// API ROUTES
+	// ============================================================================ 
+	'api/pages' 	=> 'ApiPages', 
+	'api/posts' 	=> 'ApiPosts',
+	'api/categories'=> 'ApiCategories',
+	'api/tags' 		=> 'ApiTags',
+	'api/media' 	=> 'ApiMedia',
+	'api/menus' 	=> 'ApiMenus',
+	'api/comments' 	=> 'ApiComments',
 );
