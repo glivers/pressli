@@ -1,4 +1,4 @@
-<?php namespace Controllers;
+<?php namespace Controllers\Admin;
 
 use Lib\ThemeConfig;
 use Models\SettingModel;
@@ -9,7 +9,7 @@ use Rackage\Session;
 use Rackage\View;
 use Rackage\Csrf;
 use Rackage\Log;
-use Controllers\AdminController;
+use Controllers\Admin\AdminController;
 
 /**
  * Themes Controller
@@ -131,7 +131,7 @@ class AdminThemesController extends AdminController
      */
     protected function discoverThemes()
     {
-        $themesPath = realpath(__DIR__ . '/../../themes');
+        $themesPath = realpath(__DIR__ . '/../../../themes');
 
         if (!$themesPath || !is_dir($themesPath)) {
             return [];
@@ -185,7 +185,7 @@ class AdminThemesController extends AdminController
      */
     protected function getThemeScreenshot($themeName)
     {
-        $themesPath = realpath(__DIR__ . '/../../themes');
+        $themesPath = realpath(__DIR__ . '/../../../themes');
         $themePath = $themesPath . DIRECTORY_SEPARATOR . $themeName;
         $assetsPath = $themePath . DIRECTORY_SEPARATOR . 'assets';
 
@@ -319,7 +319,7 @@ class AdminThemesController extends AdminController
      */
     public function postCustomize($themeName)
     {
-        file_put_contents(Path::vault() . "logs/error.log",  json_encode(Input::get(), JSON_PRETTY_PRINT)); exit();
+        //file_put_contents(Path::vault() . "logs/error.log",  json_encode(Input::get(), JSON_PRETTY_PRINT)); exit();
 
         if (!Csrf::verify()) {
             View::json(['success' => false, 'message' => 'Invalid security token'], 403);

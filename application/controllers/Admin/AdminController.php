@@ -1,4 +1,4 @@
-<?php namespace Controllers;
+<?php namespace Controllers\Admin;
 
 /**
  * Admin Base Controller - Pressli CMS

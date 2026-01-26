@@ -15,7 +15,7 @@
         "categories_menu": "Categories Menu",
         "footer_links": "Footer Links"
     },
-    "templates": {
+    "templates": { 
         "post": {
             "template": "templates/single.php",
             "data_providers": [
@@ -25,7 +25,7 @@
                 "recent_posts",
                 "popular_posts",
                 "related_posts",
-                "site_taxonomies"
+                "categories_with_count"
             ]
         },
         "page": {
@@ -33,7 +33,7 @@
             "data_providers": [
                 "site_menus",
                 "recent_posts",
-                "site_taxonomies"
+                "categories_with_count"
             ]
         },
         "archive": {
@@ -42,7 +42,7 @@
                 "site_menus",
                 "recent_posts",
                 "popular_posts",
-                "site_taxonomies"
+                "categories_with_count"
             ]
         },
         "404": {
@@ -50,7 +50,7 @@
             "data_providers": [
                 "site_menus",
                 "recent_posts",
-                "site_taxonomies"
+                "categories_with_count"
             ]
         },
         "home": {
@@ -59,7 +59,7 @@
                 "site_menus",
                 "recent_posts",
                 "popular_posts",
-                "site_taxonomies"
+                "categories_with_count"
             ]
         }
     },

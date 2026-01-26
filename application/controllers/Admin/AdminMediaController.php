@@ -1,4 +1,4 @@
-<?php namespace Controllers;
+<?php namespace Controllers\Admin;
 
 use Rackage\Csrf;
 use Rackage\View;
@@ -6,7 +6,7 @@ use Rackage\Input;
 use Rackage\Session;
 use Rackage\Redirect;
 use Lib\Services\Media;
-use Controllers\AdminController;
+use Controllers\Admin\AdminController;
 use Lib\Exceptions\ServiceException;
 
 /**

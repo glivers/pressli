@@ -1,4 +1,4 @@
-<?php namespace Controllers;
+<?php namespace Controllers\Admin;
 
 use Rackage\Csrf;
 use Rackage\View;
@@ -7,7 +7,7 @@ use Rackage\Session;
 use Rackage\Request;
 use Rackage\Redirect;
 use Lib\Services\Post;
-use Controllers\AdminController;
+use Controllers\Admin\AdminController;
 use Lib\Exceptions\ServiceException;
 
 /**
@@ -47,10 +47,10 @@ class AdminPostsController extends AdminController
         $status = Input::get('status');
 
         // Get all posts with optional status filter
-        $posts = Post::getAll($status);
+        $posts = Post::getAll('post', $status);
 
         // Get status counts for tabs
-        $statusCounts = Post::getStatusCounts();
+        $statusCounts = Post::getStatusCounts('post');
 
         View::render('admin/posts', [
             'title' => 'Posts',
@@ -107,6 +107,7 @@ class AdminPostsController extends AdminController
                 'slug' => Input::post('slug'),
                 'content' => Input::post('content'),
                 'excerpt' => Input::post('excerpt'),
+                'type' => Input::post('type'),
                 'status' => Input::post('status', 'draft'),
                 'visibility' => Input::post('visibility', 'public'),
                 'allow_comments' => Input::post('allow-comments') ? 1 : 0,
@@ -195,6 +196,7 @@ class AdminPostsController extends AdminController
                 'slug' => Input::post('slug'),
                 'content' => Input::post('content'),
                 'excerpt' => Input::post('excerpt'),
+                'type' => Input::post('type'),
                 'status' => Input::post('status', 'draft'),
                 'visibility' => Input::post('visibility', 'public'),
                 'allow_comments' => Input::post('allow-comments') ? 1 : 0,

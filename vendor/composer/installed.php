@@ -1,22 +1,22 @@
 <?php return array(
     'root' => array(
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => null,
-        'name' => 'glivers/rachie',
+        'reference' => 'eec284574cc6e7255a1d0be6893a0ee83438a5b7',
+        'name' => 'glivers/pressli',
         'dev' => true,
     ),
     'versions' => array(
-        'glivers/rachie' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
+        'glivers/pressli' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => null,
+            'reference' => 'eec284574cc6e7255a1d0be6893a0ee83438a5b7',
             'dev_requirement' => false,
         ),
         'glivers/rackage' => array(

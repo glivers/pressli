@@ -161,26 +161,28 @@ return array(
 	 * Priority: Compound routes are checked BEFORE single-segment routes.
 	 * So 'admin/users' takes precedence over 'admin'.
 	 */
-	'admin/users' 	=> 'AdminUsers',    
-	'admin/pages' 	=> 'AdminPages',    
-	'admin/posts' 	=> 'AdminPosts',    
-	'admin/categories' => 'AdminCategories',    
-	'admin/tags' 	=> 'AdminTags',    
-	'admin/media' 	=> 'AdminMedia',    
-	'admin/comments'=> 'AdminComments',    
-	'admin/menus' 	=> 'AdminMenus',    
-	'admin/themes' 	=> 'AdminThemes',    
-	'admin/plugins' => 'AdminPlugins',    
-	'admin/settings'=> 'AdminSettings',  
+	'admin' 			=> 'Admin\Admin',    
+	'admin/users' 		=> 'Admin\AdminUsers',    
+	'admin/pages' 		=> 'Admin\AdminPages',    
+	'admin/posts' 		=> 'Admin\AdminPosts',    
+	'admin/categories' 	=> 'Admin\AdminCategories',    
+	'admin/tags' 		=> 'Admin\AdminTags',    
+	'admin/media' 		=> 'Admin\AdminMedia',    
+	'admin/comments'	=> 'Admin\AdminComments',    
+	'admin/menus' 		=> 'Admin\AdminMenus',    
+	'admin/themes' 		=> 'Admin\AdminThemes',    
+	'admin/plugins' 	=> 'Admin\AdminPlugins',    
+	'admin/settings'	=> 'Admin\AdminSettings',  
 
 	// ============================================================================
 	// API ROUTES
 	// ============================================================================ 
-	'api/pages' 	=> 'ApiPages', 
-	'api/posts' 	=> 'ApiPosts',
-	'api/categories'=> 'ApiCategories',
-	'api/tags' 		=> 'ApiTags',
-	'api/media' 	=> 'ApiMedia',
-	'api/menus' 	=> 'ApiMenus',
-	'api/comments' 	=> 'ApiComments',
+	'api' 			=> 'Api\Api', 
+	'api/pages' 	=> 'Api\ApiPages', 
+	'api/posts' 	=> 'Api\ApiPosts',
+	'api/categories'=> 'Api\ApiCategories',
+	'api/tags' 		=> 'Api\ApiTags',
+	'api/media' 	=> 'Api\ApiMedia',
+	'api/menus' 	=> 'Api\ApiMenus',
+	'api/comments' 	=> 'Api\ApiComments',
 );

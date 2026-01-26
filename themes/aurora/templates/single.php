@@ -28,7 +28,7 @@
                 @if($post['featured_image'])
                     <div class="post-thumbnail">
                         <img src="{{ Url::assets($post['featured_image']) }}" alt="{{ $post['featured_image_alt'] or $post['title'] }}">
-                    </div>
+                    </div> 
                 @endif
 
                 <div class="post-content">
@@ -51,11 +51,11 @@
             <!-- Post Navigation -->
             <nav class="post-navigation" style="display: flex; justify-content: space-between; margin-top: 3rem; padding: 2rem 0; border-top: 1px solid #e0e0e0;">
                 <div class="nav-previous">
-                    <a href="single.html">&larr; Previous Post</a>
+                    <a href="{{Url::base()}}">&larr; Previous Post</a>
                     <p style="color: #666; font-size: 0.875rem; margin-top: 0.5rem;">Digital Minimalism Guide</p>
                 </div>
                 <div class="nav-next" style="text-align: right;">
-                    <a href="single.html">Next Post &rarr;</a>
+                    <a href="{{Url::base()}}">Next Post &rarr;</a>
                     <p style="color: #666; font-size: 0.875rem; margin-top: 0.5rem;">Modern CSS Grid Layouts</p>
                 </div>
             </nav>
@@ -98,13 +98,13 @@
                 </div>
             @endif
 
-            @if(!empty($site_taxonomies['categories']))
+            @if(!empty($categories_with_count))
                 <!-- Categories Widget -->
                 <div class="widget widget-categories">
-                    <h3 class="widget-title">Categories</h3>
+                    <h3 class="widget-title">Post Categories</h3>
                     <ul>
-                        @foreach($site_taxonomies['categories'] as $category)
-                            <li><a href="{{ Url::link('category', $category['slug']) }}">{{ $category['name'] }} ({{ $category['count'] ?? 0 }})</a></li>
+                        @foreach($categories_with_count as $category)
+                            <li><a href="{{ Url::link('category', $category['slug']) }}">{{ $category['name'] }} ({{ $category['post_count'] ?? 0 }})</a></li>
                         @endforeach
                     </ul>
                 </div>

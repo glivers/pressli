@@ -1,4 +1,4 @@
-<?php namespace Controllers;
+<?php namespace Controllers\Api;
 
 use Rackage\View;
 use Rackage\Input;

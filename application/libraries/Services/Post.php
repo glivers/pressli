@@ -95,6 +95,7 @@ class Post
             'content' => $data['content'] ?? null,
             'excerpt' => $data['excerpt'] ?? null,
             'author_id' => $authorId,
+            'type' => $data['type'] ?? 'post',
             'status' => $status,
             'visibility' => $data['visibility'] ?? 'public',
             'published_at' => $publishedAt,
@@ -173,6 +174,7 @@ class Post
             'slug' => $slug,
             'content' => $data['content'] ?? null,
             'excerpt' => $data['excerpt'] ?? null,
+            'type' => $data['type'] ?? 'post',
             'status' => $status,
             'visibility' => $data['visibility'] ?? 'public',
             'published_at' => $publishedAt,
@@ -227,16 +229,18 @@ class Post
      * post via separate query and groups by post_id. Excludes or includes
      * soft-deleted based on status filter. Ordered by newest first.
      *
+     * @param string $type The type of post to load, can be 'post' or custom posts
      * @param string|null $status Optional status filter (published, draft, scheduled, trash)
      * @return array Array of post records with author and categories
      */
-    public static function getAll($status = null)
+    public static function getAll($type, $status = null)
     {
         // Build query with author JOIN
         $query = PostModel::select([
                 'id', 'title', 'slug', 'status',
                 'published_at', 'created_at', 'updated_at'
             ])
+            ->where('type', 'post')
             ->leftJoin('users', 'author_id = id', ['username', 'first_name', 'last_name', 'avatar']);
 
         // Apply status filter (trash vs active statuses)
@@ -317,19 +321,20 @@ class Post
     /**
      * Get status counts for all post states
      *
-     * Returns count of posts in each status (all, published, draft, scheduled, trash).
+     * Returns count of 'posts' in each status (all, published, draft, scheduled, trash).
      * Used for displaying status tabs with counts in admin UI.
      *
+     * @param string $type The type of post to fetch, default is 'post'
      * @return array Associative array with status counts
      */
-    public static function getStatusCounts()
+    public static function getStatusCounts($type = 'post')
     {
         return [
-            'all' => PostModel::whereNull('deleted_at')->count(),
-            'published' => PostModel::where('status', 'published')->whereNull('deleted_at')->count(),
-            'draft' => PostModel::where('status', 'draft')->whereNull('deleted_at')->count(),
-            'scheduled' => PostModel::where('status', 'scheduled')->whereNull('deleted_at')->count(),
-            'trash' => PostModel::whereNotNull('deleted_at')->count()
+            'all' => PostModel::where('type', $type)->whereNull('deleted_at')->count(),
+            'published' => PostModel::where('type', $type)->where('status', 'published')->whereNull('deleted_at')->count(),
+            'draft' => PostModel::where('type', $type)->where('status', 'draft')->whereNull('deleted_at')->count(),
+            'scheduled' => PostModel::where('type', $type)->where('status', 'scheduled')->whereNull('deleted_at')->count(),
+            'trash' => PostModel::where('type', $type)->whereNotNull('deleted_at')->count()
         ];
     }
 

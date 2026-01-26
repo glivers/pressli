@@ -1,4 +1,4 @@
-<?php namespace Controllers;
+<?php namespace Controllers\Api;
 
 /**
  * API Pages Controller - Pressli CMS
@@ -29,7 +29,7 @@ use Rackage\View;
 use Rackage\Input;
 use Rackage\Session;
 use Lib\Services\Page;
-use Controllers\ApiController;
+use Controllers\Api\ApiController;
 use Lib\Exceptions\ServiceException;
 
 class ApiPagesController extends ApiController

@@ -34,6 +34,7 @@
 
             <form method="POST" action="{{ Url::link('admin/posts/new') }}">
                 {{{ Csrf::field() }}}
+                <input type="hidden" name="type" value="post">
 
             <div class="editor-layout">
                 <!-- Main Editor Area -->

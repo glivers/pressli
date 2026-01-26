@@ -1,4 +1,4 @@
-<?php namespace Controllers;
+<?php namespace Controllers\Api;
 
 /**
  * API Posts Controller - Pressli CMS
@@ -29,7 +29,7 @@ use Rackage\View;
 use Rackage\Input;
 use Rackage\Session;
 use Lib\Services\Post;
-use Controllers\ApiController;
+use Controllers\Api\ApiController;
 use Lib\Exceptions\ServiceException;
 
 class ApiPostsController extends ApiController
@@ -52,7 +52,7 @@ class ApiPostsController extends ApiController
         $status = Input::get('status');
 
         // Get all posts with optional status filter
-        $posts = Post::getAll($status);
+        $posts = Post::getAll('post', $status);
 
         // Get status counts for metadata
         $statusCounts = Post::getStatusCounts();
@@ -134,6 +134,7 @@ class ApiPostsController extends ApiController
                 'slug' => Input::post('slug'),
                 'content' => Input::post('content'),
                 'excerpt' => Input::post('excerpt'),
+                'type' => Input::post('type'),
                 'status' => Input::post('status', 'draft'),
                 'visibility' => Input::post('visibility', 'public'),
                 'allow_comments' => Input::post('allow_comments') ? 1 : 0,
@@ -203,6 +204,7 @@ class ApiPostsController extends ApiController
                 'slug' => Input::post('slug'),
                 'content' => Input::post('content'),
                 'excerpt' => Input::post('excerpt'),
+                'type' => Input::post('type'),
                 'status' => Input::post('status', 'draft'),
                 'visibility' => Input::post('visibility', 'public'),
                 'allow_comments' => Input::post('allow_comments') ? 1 : 0,

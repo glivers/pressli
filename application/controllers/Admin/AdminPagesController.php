@@ -1,4 +1,4 @@
-<?php namespace Controllers;
+<?php namespace Controllers\Admin;
 
 use Rackage\Csrf;
 use Rackage\View;
@@ -7,7 +7,7 @@ use Rackage\Session;
 use Rackage\Request;
 use Rackage\Redirect;
 use Lib\Services\Page;
-use Controllers\AdminController;
+use Controllers\Admin\AdminController;
 use Lib\Exceptions\ServiceException;
 
 /**
@@ -102,6 +102,7 @@ class AdminPagesController extends AdminController
                 'slug' => Input::post('slug'),
                 'content' => Input::post('content'),
                 'excerpt' => Input::post('excerpt'),
+                'type' => Input::post('type'),
                 'template' => Input::post('template'),
                 'parent_id' => Input::post('parent_id'),
                 'status' => Input::post('status'),
@@ -184,6 +185,7 @@ class AdminPagesController extends AdminController
                 'slug' => Input::post('slug'),
                 'content' => Input::post('content'),
                 'excerpt' => Input::post('excerpt'),
+                'type' => Input::post('type'),
                 'template' => Input::post('template'),
                 'parent_id' => Input::post('parent_id'),
                 'status' => Input::post('status'),

@@ -1,4 +1,4 @@
-<?php namespace Controllers;
+<?php namespace Controllers\Api;
 
 /**
  * API Media Controller - Pressli CMS
@@ -29,7 +29,7 @@ use Rackage\View;
 use Rackage\Input;
 use Rackage\Session;
 use Lib\Services\Media;
-use Controllers\ApiController;
+use Controllers\Api\ApiController;
 use Lib\Exceptions\ServiceException;
 
 class ApiMediaController extends ApiController

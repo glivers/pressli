@@ -1,4 +1,4 @@
-<?php namespace Controllers;
+<?php namespace Controllers\Api;
 
 /**
  * API Comments Controller - Pressli CMS
@@ -30,7 +30,7 @@
 use Rackage\View;
 use Rackage\Input;
 use Lib\Services\Comment;
-use Controllers\ApiController;
+use Controllers\Api\ApiController;
 use Lib\Exceptions\ServiceException;
 
 class ApiCommentsController extends ApiController
