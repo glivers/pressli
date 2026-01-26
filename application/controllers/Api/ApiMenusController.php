@@ -1,4 +1,4 @@
-<?php namespace Controllers;
+<?php namespace Controllers\Api;
 
 /**
  * API Menus Controller - Pressli CMS
@@ -33,7 +33,7 @@
 use Rackage\View;
 use Rackage\Input;
 use Lib\Services\Menu;
-use Controllers\ApiController;
+use Controllers\Api\ApiController;
 use Lib\Exceptions\ServiceException;
 
 class ApiMenusController extends ApiController
