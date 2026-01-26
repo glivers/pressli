@@ -1,0 +1,93 @@
+{
+    "packages": [
+        {
+            "name": "glivers/rackage",
+            "version": "v2.0.0",
+            "version_normalized": "2.0.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/glivers/rackage.git",
+                "reference": "9f4a5ea7e74134a13a16651b47e929c6cfd9467f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/glivers/rackage/zipball/9f4a5ea7e74134a13a16651b47e929c6cfd9467f",
+                "reference": "9f4a5ea7e74134a13a16651b47e929c6cfd9467f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.0"
+            },
+            "time": "2026-01-20T21:42:47+00:00",
+            "type": "package",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Rackage\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Geoffrey Okongo",
+                    "email": "code@rachie.dev"
+                }
+            ],
+            "description": "This is a collection of all the PHP classes that make Rachie a real MVC framework",
+            "support": {
+                "issues": "https://github.com/glivers/rackage/issues",
+                "source": "https://github.com/glivers/rackage/tree/v2.0.0"
+            },
+            "install-path": "../glivers/rackage"
+        },
+        {
+            "name": "glivers/roline",
+            "version": "v2.0.0",
+            "version_normalized": "2.0.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/glivers/roline.git",
+                "reference": "3d2b4cfbb651994adb094dbe9e407474a15d3f29"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/glivers/roline/zipball/3d2b4cfbb651994adb094dbe9e407474a15d3f29",
+                "reference": "3d2b4cfbb651994adb094dbe9e407474a15d3f29",
+                "shasum": ""
+            },
+            "require": {
+                "glivers/rackage": "^2.0",
+                "php": ">=8.0.0"
+            },
+            "time": "2026-01-20T21:39:39+00:00",
+            "type": "package",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Roline\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Geoffrey Okongo",
+                    "email": "code@rachie.dev"
+                }
+            ],
+            "description": "This is the entry point into the Rachie console commands",
+            "support": {
+                "issues": "https://github.com/glivers/roline/issues",
+                "source": "https://github.com/glivers/roline/tree/v2.0.0"
+            },
+            "install-path": "../glivers/roline"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}
