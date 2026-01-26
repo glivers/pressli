@@ -7,11 +7,7 @@
 
             <!-- Archive Header -->
             <header class="archive-header" style="margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 2px solid #e0e0e0;">
-                <h1 class="archive-title" style="font-size: 2.5rem; margin-bottom: 0.5rem;">{{ $site['name'] }}</h1>
-                <p class="archive-description" style="color: #666; font-size: 1.125rem;">{{ $site['tagline'] }}</p>
-                @if($pagination)
-                    <p class="archive-count" style="color: #999; font-size: 0.875rem; margin-top: 0.5rem;">{{ $pagination['total'] }} posts</p>
-                @endif
+                <h1 class="archive-title" style="font-size: 2.5rem; margin-bottom: 0.5rem;">{{ $taxonomy or 'All Posts' }}</h1>
             </header>
 
             <!-- Posts List -->
