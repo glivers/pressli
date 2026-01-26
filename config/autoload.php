@@ -35,8 +35,8 @@
 
 return [
 	// Add your custom namespaces here
-	// 'Themes\\'   => 'themes/',
-	// 'Plugins\\'  => 'plugins/',
+	'Themes\\'   => 'themes/',
+	'Plugins\\'  => 'plugins/',
 	// 'Modules\\'  => 'modules/',
 	// 'Services\\' => 'application/services/',
 ];
