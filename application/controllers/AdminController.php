@@ -56,8 +56,17 @@ class AdminController extends Controller
         }
     }
 
-    public function index(){
-        echo "We here...";
+    /**
+     * Display admin on no method provided
+     * 
+     * Main landing page for admin dashboard
+     * @param null
+     * @return void
+     */
+    public function getIndex()
+    {
+        $data['title'] = 'Dashboard';
+        View::render('admin/index', $data);
     }
 
     /**
