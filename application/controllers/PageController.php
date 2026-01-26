@@ -55,6 +55,8 @@
 use Rackage\View;
 use Rackage\Input;
 use Rackage\Path;
+use Rackage\Registry;
+use Rackage\Redirect;
 use Lib\ThemeConfig;
 use Models\PostModel;
 use Lib\CoreProviders;
@@ -106,6 +108,7 @@ class PageController extends Controller
      * Constructor - load settings, register providers, load theme config
      *
      * Execution order:
+     * 0. Check if CMS is installed (redirect to /install if not)
      * 1. Load autoload settings from database (single query)
      * 2. Get active theme name from settings
      * 3. Load theme configuration from theme.json
@@ -118,6 +121,13 @@ class PageController extends Controller
      */
     public function __construct()
     {
+        // STEP 0: Check if CMS is installed (zero overhead - just array access)
+        $settings = Registry::settings();
+
+        if (!$settings['installed']) {
+            Redirect::to('install');
+        }
+
         // STEP 1: Load settings from database (cached for this request)
         $this->siteSettings = SettingModel::getAutoload();
 

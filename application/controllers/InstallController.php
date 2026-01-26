@@ -10,6 +10,7 @@ use Rackage\Request;
 use Rackage\Session;
 use Rackage\Redirect;
 use Rackage\Security;
+use Rackage\Registry;
 use Models\RoleModel;
 use Models\UserModel;
 use Rackage\Controller;
@@ -81,13 +82,24 @@ class InstallController extends Controller
     /**
      * Check if installation is complete
      *
-     * Determines installation status by checking if admin user exists.
-     * Returns true if admin found, false if not installed or tables missing.
+     * Two-layer defense:
+     * 1. Check config file first (fast check)
+     * 2. Verify admin user exists in database (security layer)
+     *
+     * This prevents reinstallation attacks even if attacker modifies config.
      *
      * @return bool True if installed, false otherwise
      */
     private function isInstalled()
     {
+        // Layer 1: Check config file (fast check from memory)
+        $settings = Registry::settings();
+
+        if (!$settings['installed']) {
+            return false;  // Config says not installed
+        }
+
+        // Layer 2: Config says installed - verify in database (security)
         $dbConfig = require Path::base() . 'config/database.php';
 
         if (empty($dbConfig['default'])) {
@@ -343,6 +355,9 @@ class InstallController extends Controller
             SettingModel::set('posts_per_page', '10', true);
             SettingModel::set('active_theme', 'aurora', true);
 
+            // Mark installation as complete in config file
+            $this->markInstalled();
+
             Session::remove('install_db_configured');
             Session::set('install_just_completed', true);
 
@@ -424,5 +439,31 @@ class InstallController extends Controller
         View::render('auth/install-complete', [
             'title' => 'Installation Complete - Pressli'
         ]);
+    }
+
+    /**
+     * Update settings.php to mark installation complete
+     *
+     * Modifies config/settings.php by replacing 'installed' => false with true.
+     * This enables PageController to redirect to install on fresh installations.
+     *
+     * SECURITY: Even if attacker modifies this back to false, isInstalled()
+     * checks database for admin user, preventing reinstallation attacks.
+     *
+     * @return void
+     */
+    private function markInstalled()
+    {
+        $configPath = Path::base() . 'config/settings.php';
+        $content = file_get_contents($configPath);
+
+        // Replace 'installed' => false with 'installed' => true
+        $content = preg_replace(
+            "/'installed'\s*=>\s*false/",
+            "'installed' => true",
+            $content
+        );
+
+        file_put_contents($configPath, $content);
     }
 }

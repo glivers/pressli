@@ -88,6 +88,26 @@ return array(
 	 */
 	'version' => '0.0.1',
 
+	/**
+	 * Installation Status
+	 *
+	 * Indicates whether installation wizard has completed successfully.
+	 * Set to true automatically by InstallController after database setup.
+	 *
+	 * When FALSE (not installed):
+	 *   - All public requests redirect to /install
+	 *   - Installation wizard is accessible
+	 *
+	 * When TRUE (installed):
+	 *   - Site operates normally
+	 *   - Installation wizard returns 404
+	 *
+	 * SECURITY: Do not manually set to false. InstallController validates
+	 * admin user existence in database to prevent reinstallation attacks.
+	 * Even if this is set to false, installation cannot proceed if admin exists.
+	 */
+	'installed' => true,
+
 	// ============================================================================
 	// ENVIRONMENT CONFIGURATION
 	// ============================================================================
