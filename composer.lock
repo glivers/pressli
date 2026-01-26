@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "058381db8b100cd9e179cf43b163f3a3",
+    "content-hash": "dc91f6e3d65eb54b301ca69d2b81171e",
     "packages": [
         {
             "name": "glivers/rackage",
