@@ -34,6 +34,7 @@
 
             <form method="POST" action="{{ Url::link('admin/pages/edit/' . $page['id']) }}">
                 {{{ Csrf::field() }}}
+                <input type="hidden" name="type" value="page">
 
             <div class="editor-layout">
                 <!-- Main Editor Area -->
