@@ -1,4 +1,4 @@
-<?php namespace Controllers;
+<?php namespace Controllers\Admin;
 
 use Rackage\View;
 use Rackage\Input;
@@ -8,7 +8,7 @@ use Rackage\Security;
 use Rackage\Csrf;
 use Models\UserModel;
 use Models\RoleModel;
-use Controllers\AdminController;
+use Controllers\Admin\AdminController;
 
 /**
  * Users Controller - Pressli CMS
