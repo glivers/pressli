@@ -1,4 +1,4 @@
-<?php namespace Controllers;
+<?php namespace Controllers\Api;
 
 /**
  * API Tags Controller - Pressli CMS
@@ -28,7 +28,7 @@
 use Rackage\View;
 use Rackage\Input;
 use Lib\Services\Taxonomy;
-use Controllers\ApiController;
+use Controllers\Api\ApiController;
 use Lib\Exceptions\ServiceException;
 
 class ApiTagsController extends ApiController
