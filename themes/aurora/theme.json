@@ -1,0 +1,72 @@
+{
+    "name": "Aurora Theme",
+    "version": "1.0.0",
+    "author": "Pressli Team",
+    "description": "A clean, modern theme for Pressli CMS",
+    "screenshot": "screenshot.png",
+    "requires": {
+        "php": "^7.4",
+        "pressli-cms": "^1.0"
+    },
+    "menu_locations": {
+        "primary_menu": "Primary Menu",
+        "footer_menu": "Footer Menu",
+        "social_menu": "Social Links",
+        "categories_menu": "Categories Menu",
+        "footer_links": "Footer Links"
+    },
+    "templates": {
+        "post": {
+            "template": "templates/single.php",
+            "data_providers": [
+                "site_menus",
+                "post_categories",
+                "comments_count",
+                "recent_posts",
+                "popular_posts",
+                "related_posts",
+                "site_taxonomies"
+            ]
+        },
+        "page": {
+            "template": "templates/page.php",
+            "data_providers": [
+                "site_menus",
+                "recent_posts",
+                "site_taxonomies"
+            ]
+        },
+        "archive": {
+            "template": "templates/archive.php",
+            "data_providers": [
+                "site_menus",
+                "recent_posts",
+                "popular_posts",
+                "site_taxonomies"
+            ]
+        },
+        "404": {
+            "template": "templates/404.php",
+            "data_providers": [
+                "site_menus",
+                "recent_posts",
+                "site_taxonomies"
+            ]
+        },
+        "home": {
+            "template": "templates/index.php",
+            "data_providers": [
+                "site_menus",
+                "recent_posts",
+                "popular_posts",
+                "site_taxonomies"
+            ]
+        }
+    },
+    "settings": {
+        "primary_color": "#3498db",
+        "show_author": true,
+        "posts_per_page": 10,
+        "show_comments": true
+    }
+}
