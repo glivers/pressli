@@ -1,4 +1,4 @@
-<?php namespace Controllers;
+<?php namespace Controllers\Admin;
 
 /**
  * Menus Controller - Pressli CMS
@@ -23,7 +23,7 @@ use Models\PostModel;
 use Models\SettingModel;
 use Models\TaxonomyModel;
 use Lib\Services\Menu;
-use Controllers\AdminController;
+use Controllers\Admin\AdminController;
 use Lib\Exceptions\ServiceException;
 
 class AdminMenusController extends AdminController
