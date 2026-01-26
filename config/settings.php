@@ -146,7 +146,7 @@ return array(
 	 * 
 	 * This can be overridden on a per-page basis in your views/controllers.
 	 */
-	'title' => 'Rachie Framework',
+	'title' => 'Pressli CMS',
 
 	/**
 	 * Application Protocol
@@ -272,7 +272,7 @@ return array(
 		 *   'Index' - Index page
 		 *   'Main'  - Main page
 		 */
-		'controller' => 'Home',
+		'controller' => 'Page',
 
 		/**
 		 * Default Action
@@ -432,8 +432,8 @@ return array(
 	 * Default: Empty (only use application/views/)
 	 */
 	'view_paths' => array(
-		// 'themes/',
-		// 'plugins/',
+		'plugins/',
+		'themes/',
 	),
 
 	// ============================================================================
@@ -478,7 +478,7 @@ return array(
 		 * Set to true to enable catch-all routing for unmatched URLs.
 		 * Default: false (disabled)
 		 */
-		'catch_all' => false,
+		'catch_all' => true,
 
 		/**
 		 * Catch-All Controller
@@ -486,7 +486,7 @@ return array(
 		 * The controller to dispatch to when no route/controller matches.
 		 * Default: 'Pages'
 		 */
-		'controller' => 'Pages',
+		'controller' => 'Page',
 
 		/**
 		 * Catch-All Method
