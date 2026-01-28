@@ -62,7 +62,8 @@ class AdminThemesController extends AdminController
                     'path' => $config->getPath(),
                     'is_active' => ($themeName === $activeThemeName),
                 ];
-            } catch (\Exception $e) {
+            } 
+            catch (\Exception $e) {
                 // Skip themes with invalid configuration
                 continue;
             }
@@ -80,12 +81,16 @@ class AdminThemesController extends AdminController
             }
         }
 
-        // Render admin themes view
-        View::render('admin/themes', [
+        // Array of data to send to view
+        $data = [
             'active_theme' => $activeTheme,
             'available_themes' => $availableThemes,
             'title' => 'Themes',
-        ]);
+            'settings' => $this->settings
+        ];
+
+        // Render admin themes view
+        View::render('admin/themes', $data);
     }
 
     /**
@@ -103,7 +108,8 @@ class AdminThemesController extends AdminController
         // Validate theme exists and has valid configuration
         try {
             $config = ThemeConfig::load($themeName);
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
             Session::flash('error', 'Cannot activate theme: ' . $e->getMessage());
             Redirect::to('admin/themes/index');
             return;
@@ -201,7 +207,8 @@ class AdminThemesController extends AdminController
                     return '/themes/' . $themeName . '/assets/' . $json['screenshot'];
                 }
             }
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
             // Continue to default checks
         }
 
@@ -233,7 +240,8 @@ class AdminThemesController extends AdminController
         // Validate theme exists and load configuration
         try {
             $config = ThemeConfig::load($themeName);
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
             Session::flash('error', 'Theme not found: ' . $themeName);
             Redirect::to('admin/themes/index');
             return;
@@ -257,11 +265,15 @@ class AdminThemesController extends AdminController
         $activeThemeName = SettingModel::get('active_theme');
         $themeData['is_active'] = ($themeName === $activeThemeName);
 
-        // Render theme details view
-        View::render('admin/themes-details', [
+        // Array of data to send to view
+        $data = [
             'theme' => $themeData,
-            'title' => $meta['name'] . ' - Theme Details',
-        ]);
+            'title' => $meta['name'] . ' Theme Details',
+            'settings' => $this->settings
+        ];
+
+        // Render theme details view
+        View::render('admin/themes-details', $data);
     }
 
     /**
@@ -298,12 +310,16 @@ class AdminThemesController extends AdminController
             'display_name' => $meta['name'],
         ];
 
-        // Render theme customizer view
-        View::render('admin/themes-customize', [
+        // Array of data to send to view
+        $data = [
             'theme' => $themeData,
             'settings' => $settings,
             'title' => 'Customize ' . $meta['name'],
-        ]);
+            'settings' => $this->settings
+        ];
+
+        // Render theme customizer view
+        View::render('admin/themes-customize', $data);
     }
 
     /**
