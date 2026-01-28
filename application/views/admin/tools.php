@@ -129,6 +129,37 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Robots.txt Generator -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-header">
+                    <h2 class="card-title">🤖 Robots.txt Generator</h2>
+                </div>
+                <div class="card-body">
+                    <p style="margin-bottom: 1rem; color: #666;">
+                        Generate robots.txt file to control search engine crawlers. Includes sitemap reference and blocks admin areas.
+                    </p>
+
+                    <form method="POST" action="{{ Url::link('admin/tools/robots') }}">
+                        {{{ Csrf::field() }}}
+
+                        <div class="alert alert-info" style="margin-bottom: 1rem; padding: 0.75rem; background: #d1ecf1; border: 1px solid #bee5eb; border-radius: 4px;">
+                            <strong>ℹ️ Robots.txt Location:</strong> /robots.txt
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Generate Robots.txt</button>
+                    </form>
+
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #dee2e6;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.875rem; font-weight: 600;">What's included:</h4>
+                        <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.875rem; color: #666;">
+                            <li>Allow all search engine crawlers</li>
+                            <li>Block /admin/ and /vault/ directories</li>
+                            <li>Reference to sitemap.xml</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Right Column -->
