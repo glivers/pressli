@@ -59,7 +59,7 @@ class AdminSettingsController extends Controller
             'settings' => $this->settings
         ];
 
-        View::render('admin/settings-new', $data);
+        View::render('admin/settings', $data);
     }
 
     /**
