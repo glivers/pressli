@@ -107,15 +107,9 @@
                         Generate an XML sitemap for search engines. Includes homepage, published posts, pages, categories, and tags.
                     </p>
 
-                    <form method="POST" action="{{ Url::link('admin/tools/sitemap') }}">
-                        {{{ Csrf::field() }}}
+                    <button type="button" id="generate-sitemap-btn" class="btn btn-primary">Generate Sitemap</button>
 
-                        <div class="alert alert-info" style="margin-bottom: 1rem; padding: 0.75rem; background: #d1ecf1; border: 1px solid #bee5eb; border-radius: 4px;">
-                            <strong>ℹ️ Sitemap Location:</strong> /sitemap.xml
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Generate Sitemap</button>
-                    </form>
+                    <div id="sitemap-result" style="margin-top: 1rem;"></div>
 
                     <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #dee2e6;">
                         <h4 style="margin: 0 0 0.5rem 0; font-size: 0.875rem; font-weight: 600;">What's included:</h4>
@@ -140,15 +134,9 @@
                         Generate robots.txt file to control search engine crawlers. Includes sitemap reference and blocks admin areas.
                     </p>
 
-                    <form method="POST" action="{{ Url::link('admin/tools/robots') }}">
-                        {{{ Csrf::field() }}}
+                    <button type="button" id="generate-robots-btn" class="btn btn-primary">Generate Robots.txt</button>
 
-                        <div class="alert alert-info" style="margin-bottom: 1rem; padding: 0.75rem; background: #d1ecf1; border: 1px solid #bee5eb; border-radius: 4px;">
-                            <strong>ℹ️ Robots.txt Location:</strong> /robots.txt
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Generate Robots.txt</button>
-                    </form>
+                    <div id="robots-result" style="margin-top: 1rem;"></div>
 
                     <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #dee2e6;">
                         <h4 style="margin: 0 0 0.5rem 0; font-size: 0.875rem; font-weight: 600;">What's included:</h4>
@@ -458,6 +446,106 @@
 
                 document.getElementById('update-btn').disabled = true;
                 document.getElementById('update-btn').textContent = 'Uploading & Updating...';
+            });
+        }
+
+        // Sitemap Generator
+        const sitemapBtn = document.getElementById('generate-sitemap-btn');
+        if (sitemapBtn) {
+            sitemapBtn.addEventListener('click', async function() {
+                const resultDiv = document.getElementById('sitemap-result');
+                sitemapBtn.disabled = true;
+                sitemapBtn.textContent = 'Generating...';
+                resultDiv.innerHTML = '';
+
+                try {
+                    const response = await fetch('{{ Url::link("admin/tools/sitemap") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        resultDiv.innerHTML = `
+                            <div class="alert alert-success" style="padding: 0.75rem; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px;">
+                                <strong>✓ ${data.message}</strong><br>
+                                <a href="${data.sitemapUrl}" target="_blank" style="color: #155724; text-decoration: underline;">View Sitemap</a>
+                            </div>
+                        `;
+                    }
+                    else {
+                        resultDiv.innerHTML = `
+                            <div class="alert alert-error" style="padding: 0.75rem; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; color: #721c24;">
+                                <strong>✗ ${data.message}</strong>
+                            </div>
+                        `;
+                    }
+                }
+                catch (error) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-error" style="padding: 0.75rem; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; color: #721c24;">
+                            <strong>✗ Error: ${error.message}</strong>
+                        </div>
+                    `;
+                }
+                finally {
+                    sitemapBtn.disabled = false;
+                    sitemapBtn.textContent = 'Generate Sitemap';
+                }
+            });
+        }
+
+        // Robots.txt Generator
+        const robotsBtn = document.getElementById('generate-robots-btn');
+        if (robotsBtn) {
+            robotsBtn.addEventListener('click', async function() {
+                const resultDiv = document.getElementById('robots-result');
+                robotsBtn.disabled = true;
+                robotsBtn.textContent = 'Generating...';
+                resultDiv.innerHTML = '';
+
+                try {
+                    const response = await fetch('{{ Url::link("admin/tools/robots") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        resultDiv.innerHTML = `
+                            <div class="alert alert-success" style="padding: 0.75rem; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px;">
+                                <strong>✓ ${data.message}</strong><br>
+                                <a href="${data.robotsUrl}" target="_blank" style="color: #155724; text-decoration: underline;">View Robots.txt</a>
+                            </div>
+                        `;
+                    }
+                    else {
+                        resultDiv.innerHTML = `
+                            <div class="alert alert-error" style="padding: 0.75rem; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; color: #721c24;">
+                                <strong>✗ ${data.message}</strong>
+                            </div>
+                        `;
+                    }
+                }
+                catch (error) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-error" style="padding: 0.75rem; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; color: #721c24;">
+                            <strong>✗ Error: ${error.message}</strong>
+                        </div>
+                    `;
+                }
+                finally {
+                    robotsBtn.disabled = false;
+                    robotsBtn.textContent = 'Generate Robots.txt';
+                }
             });
         }
     </script>
