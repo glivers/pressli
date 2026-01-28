@@ -18,6 +18,7 @@
                     </svg>
                     <span class="breadcrumb-current">Edit Post</span>
                 </div>
+                <a href="{{ Url::link('admin/posts/new') }}" class="breadcrumb-link">+ Add New</a>
             </div>
 
             @if(Session::hasFlash('success'))
