@@ -50,14 +50,15 @@
                         <span class="permalink-url">{{ Url::base() }}</span>
                         @if($post['status'] === 'published')
                             <a href="{{ Url::link($post['slug']) }}" target="_blank" class="permalink-link" style="color: #3b82f6; text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem;">
-                                {{ $post['slug'] }}
+                                <span class="permalink-display">{{ $post['slug'] }}</span>
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;">
                                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                                     <polyline points="15 3 21 3 21 9"></polyline>
                                     <line x1="10" y1="14" x2="21" y2="3"></line>
                                 </svg>
                             </a>
-                            <input type="hidden" name="slug" value="{{ $post['slug'] }}">
+                            <input type="text" name="slug" class="permalink-input" value="{{ $post['slug'] }}" style="display: none;">
+                            <button type="button" class="permalink-toggle-btn" style="margin-left: auto; font-size: 13px; color: #6b7280; text-decoration: underline; background: none; border: none; cursor: pointer; padding: 0;">Edit</button>
                         @else
                             <input type="text" name="slug" class="permalink-input" placeholder="auto-generated-from-title" value="{{ $post['slug'] }}">
                         @endif
@@ -444,5 +445,39 @@
         setPublish.addEventListener('click', function(){
             document.getElementById('status').value = 'published';
         });
+
+        // Permalink editing for published posts
+        const permalinkToggleBtn = document.querySelector('.permalink-toggle-btn');
+        const permalinkLink = document.querySelector('.permalink-link');
+        const permalinkDisplay = document.querySelector('.permalink-display');
+        const permalinkInput = document.querySelector('.permalink-wrapper input[name="slug"]');
+
+        if (permalinkToggleBtn) {
+            let isEditing = false;
+
+            permalinkToggleBtn.addEventListener('click', function() {
+                if (!isEditing) {
+                    // Switch to edit mode
+                    permalinkLink.style.display = 'none';
+                    permalinkInput.style.display = 'inline';
+                    permalinkInput.focus();
+                    permalinkInput.select();
+                    this.textContent = 'OK';
+                    this.style.color = '#3b82f6';
+                    isEditing = true;
+                }
+                else {
+                    // Switch back to display mode
+                    const newSlug = permalinkInput.value;
+                    permalinkDisplay.textContent = newSlug;
+                    permalinkLink.href = '{{ Url::base() }}' + newSlug;
+                    permalinkLink.style.display = 'inline';
+                    permalinkInput.style.display = 'none';
+                    this.textContent = 'Edit';
+                    this.style.color = '#6b7280';
+                    isEditing = false;
+                }
+            });
+        }
         </script>
 @endsection
