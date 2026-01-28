@@ -15,7 +15,7 @@
         "categories_menu": "Categories Menu",
         "footer_links": "Footer Links"
     },
-    "templates": { 
+    "templates": {
         "post": {
             "template": "templates/single.php",
             "data_providers": [
@@ -25,14 +25,6 @@
                 "recent_posts",
                 "popular_posts",
                 "related_posts",
-                "categories_with_count"
-            ]
-        },
-        "page": {
-            "template": "templates/page.php",
-            "data_providers": [
-                "site_menus",
-                "recent_posts",
                 "categories_with_count"
             ]
         },
@@ -61,12 +53,33 @@
                 "popular_posts",
                 "categories_with_count"
             ]
+        },
+        "page": {
+            "default": {
+                "label": "Default",
+                "template": "templates/pages/default.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },
+            "full-width": {
+                "label": "Full Width",
+                "template": "templates/pages/full-width.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },
+            "landing": {
+                "label": "Landing Page",
+                "template": "templates/pages/landing.php",
+                "data_providers": [
+                    "site_menus"
+                ]
+            }
         }
-    },
-    "settings": {
-        "primary_color": "#3498db",
-        "show_author": true,
-        "posts_per_page": 10,
-        "show_comments": true
     }
 }
