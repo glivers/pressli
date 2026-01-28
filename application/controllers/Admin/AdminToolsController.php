@@ -2,6 +2,8 @@
 
 use Rackage\View;
 use Rackage\Csrf;
+use Rackage\Url;
+use Rackage\Path;
 use Rackage\Input;
 use Rackage\Session;
 use Rackage\Redirect;
@@ -11,6 +13,7 @@ use Rackage\File;
 use Models\PostModel;
 use Models\SettingModel;
 use Models\MediaModel;
+use Models\TaxonomyModel;
 use Controllers\Admin\AdminController;
 
 /**
@@ -55,6 +58,105 @@ class AdminToolsController extends AdminController
         ];
 
         View::render('admin/tools', $data);
+    }
+
+    /**
+     * Generate sitemap.xml
+     *
+     * Creates XML sitemap with all published posts, pages, categories, and tags.
+     * Saves to public/sitemap.xml
+     *
+     * @return void
+     */
+    public function postSitemap()
+    {
+        // Verify CSRF token
+        if (!Csrf::verify()) {
+            Session::flash('error', 'Invalid security token');
+            Redirect::to('admin/tools');
+            return;
+        }
+
+        try {
+            $baseUrl = Url::base();
+
+            // Start XML
+            $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+            $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+
+            $urlCount = 0;
+
+            // Add homepage
+            $xml .= '  <url>' . "\n";
+            $xml .= '    <loc>' . rtrim($baseUrl, '/') . '/</loc>' . "\n";
+            $xml .= '    <lastmod>' . date('Y-m-d') . '</lastmod>' . "\n";
+            $xml .= '  </url>' . "\n";
+            $urlCount++;
+
+            // Add published pages
+            $pages = PostModel::where('type', 'page')
+                ->where('status', 'published')
+                ->select(['slug', 'updated_at'])
+                ->all();
+
+            foreach ($pages as $page) {
+                $xml .= '  <url>' . "\n";
+                $xml .= '    <loc>' . rtrim($baseUrl, '/') . '/' . $page['slug'] . '</loc>' . "\n";
+                $xml .= '    <lastmod>' . date('Y-m-d', strtotime($page['updated_at'])) . '</lastmod>' . "\n";
+                $xml .= '  </url>' . "\n";
+                $urlCount++;
+            }
+
+            // Add published posts
+            $posts = PostModel::where('type', 'post')
+                ->where('status', 'published')
+                ->select(['slug', 'updated_at'])
+                ->all();
+
+            foreach ($posts as $post) {
+                $xml .= '  <url>' . "\n";
+                $xml .= '    <loc>' . rtrim($baseUrl, '/') . '/' . $post['slug'] . '</loc>' . "\n";
+                $xml .= '    <lastmod>' . date('Y-m-d', strtotime($post['updated_at'])) . '</lastmod>' . "\n";
+                $xml .= '  </url>' . "\n";
+                $urlCount++;
+            }
+
+            // Add categories
+            $categories = TaxonomyModel::where('type', 'category')->all();
+            foreach ($categories as $category) {
+                $xml .= '  <url>' . "\n";
+                $xml .= '    <loc>' . rtrim($baseUrl, '/') . '/category/' . $category['slug'] . '</loc>' . "\n";
+                $xml .= '    <lastmod>' . date('Y-m-d') . '</lastmod>' . "\n";
+                $xml .= '  </url>' . "\n";
+                $urlCount++;
+            }
+
+            // Add tags
+            $tags = TaxonomyModel::where('type', 'tag')->all();
+            foreach ($tags as $tag) {
+                $xml .= '  <url>' . "\n";
+                $xml .= '    <loc>' . rtrim($baseUrl, '/') . '/tag/' . $tag['slug'] . '</loc>' . "\n";
+                $xml .= '    <lastmod>' . date('Y-m-d') . '</lastmod>' . "\n";
+                $xml .= '  </url>' . "\n";
+                $urlCount++;
+            }
+
+            // Close XML
+            $xml .= '</urlset>';
+
+            // Full file path
+            $sitemap = Path::base() . 'public/sitemap.xml';
+
+            // Save to public/sitemap.xml
+            File::write($sitemap, $xml);
+
+            Session::flash('success', "Sitemap generated successfully! {$urlCount} URLs included.");
+            Redirect::to('admin/tools');
+        }
+        catch (\Exception $e) {
+            Session::flash('error', 'Sitemap generation failed: ' . $e->getMessage());
+            Redirect::to('admin/tools');
+        }
     }
 
     /**
