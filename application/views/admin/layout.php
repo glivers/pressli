@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ Csrf::token() }}">
-    <title>{{$title}} - Pressli CMS</title>
+    <title>{{ $title }} | {{ $site_title ?? 'Pressli'}} </title>
+    @isset($site_favicon)
+        <link rel="icon" type="image/x-icon" href="{{ $site_favicon }}">
+    @endisset
     <script>
         window.BASE = "{{ Url::base() }}";
     </script>
