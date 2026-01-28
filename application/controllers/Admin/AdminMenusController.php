@@ -76,18 +76,23 @@ class AdminMenusController extends AdminController
 
             $themeConfig = ThemeConfig::load($activeTheme);
             $menuLocations = $themeConfig->getMenuLocations();
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
             // If theme doesn't define locations, use empty array
         }
 
-        View::render('admin/menus', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Menus',
             'menus' => $menus,
             'selectedMenuId' => $selectedMenuId,
             'selectedMenu' => $selectedMenu,
             'menuItems' => $menuItems,
-            'menuLocations' => $menuLocations
-        ]);
+            'menuLocations' => $menuLocations,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/menus', $data);
     }
 
     /**
