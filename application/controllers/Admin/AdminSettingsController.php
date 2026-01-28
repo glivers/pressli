@@ -51,11 +51,15 @@ class AdminSettingsController extends Controller
             ->order('title', 'asc')
             ->all();
 
-        View::render('admin/settings', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Settings',
             'settings' => $settings,
-            'pages' => $pages
-        ]);
+            'pages' => $pages,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/settings-new', $data);
     }
 
     /**
