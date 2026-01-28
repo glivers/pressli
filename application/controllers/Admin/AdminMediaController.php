@@ -43,11 +43,15 @@ class AdminMediaController extends AdminController
         // Get type counts for tabs
         $typeCounts = Media::getTypeCounts();
 
-        View::render('admin/media', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Media Library',
             'media' => $media,
-            'typeCounts' => $typeCounts
-        ]);
+            'typeCounts' => $typeCounts,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/media', $data);
     }
 
     /**
@@ -73,6 +77,9 @@ class AdminMediaController extends AdminController
         try {
             // Upload file via service
             $media = Media::upload('file', Session::get('user_id'));
+
+            // Array of data to send to view
+            $data = [];
 
             // Return media data for grid insertion
             View::json([
@@ -107,10 +114,14 @@ class AdminMediaController extends AdminController
             Redirect::to('admin/media');
         }
 
-        View::render('admin/media-edit', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Edit Media',
-            'media' => $media
-        ]);
+            'media' => $media,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/media-edit', $data);
     }
 
     /**
