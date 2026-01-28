@@ -28,6 +28,7 @@ use Rackage\Csrf;
 use Rackage\Controller;
 use Models\UserModel;
 use Models\TokenModel;
+use Models\SettingModel;
 
 class AdminController extends Controller
 {
@@ -54,6 +55,9 @@ class AdminController extends Controller
             // Normal browser request - redirect to login
             Redirect::to('login')->flash('error', 'Please login to access the admin panel');
         }
+
+        // Load settings from database and merge with controller $settings property
+        $this->settings = array_merge(SettingModel::getAutoload(), $this->settings);
     }
 
     /**
@@ -66,6 +70,8 @@ class AdminController extends Controller
     public function getIndex()
     {
         $data['title'] = 'Dashboard';
+        $data['settings'] = $this->settings;
+
         View::render('admin/index', $data);
     }
 
@@ -78,9 +84,12 @@ class AdminController extends Controller
      */
     public function dash()
     {
+        // Array of data to send to view
         $data['title'] = 'Dashboard';
+        $data['settings'] = $this->settings;
+
         View::render('admin/index', $data);
-    }
+    } 
 
     /**
      * Display profile page with API tokens
@@ -105,11 +114,15 @@ class AdminController extends Controller
             ->order('created_at', 'desc')
             ->all();
 
-        View::render('admin/profile', [
+        // Array of data to send to view
+        $data = [
             'title' => 'My Profile',
             'user' => $user,
-            'tokens' => $tokens
-        ]);
+            'tokens' => $tokens,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/profile', $data);
     }
 
     /**
@@ -284,6 +297,9 @@ class AdminController extends Controller
             ->where('user_id', $userId)
             ->first();
 
+        // Array of data to send to view
+        $data = [];
+
         if (!$token) {
             View::json(['success' => false, 'message' => 'Token not found or access denied'], 404);
             return;
@@ -291,6 +307,9 @@ class AdminController extends Controller
 
         // Delete token permanently
         TokenModel::where('id', $id)->delete();
+
+        // Array of data to send to view
+        $data = [];
 
         View::json(['success' => true, 'message' => 'Token revoked successfully']);
     }
