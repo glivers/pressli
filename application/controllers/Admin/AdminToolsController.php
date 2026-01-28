@@ -72,8 +72,7 @@ class AdminToolsController extends AdminController
     {
         // Verify CSRF token
         if (!Csrf::verify()) {
-            Session::flash('error', 'Invalid security token');
-            Redirect::to('admin/tools');
+            View::json(['success' => false, 'message' => 'Invalid security token'], 403);
             return;
         }
 
@@ -163,12 +162,14 @@ class AdminToolsController extends AdminController
             // Save to public/sitemap.xml
             File::write($sitemap, $xml);
 
-            Session::flash('success', "Sitemap generated successfully! {$urlCount} URLs included.");
-            Redirect::to('admin/tools');
+            View::json([
+                'success' => true,
+                'message' => "Sitemap generated successfully! {$urlCount} URLs included.",
+                'sitemapUrl' => Url::base() . 'sitemap.xml'
+            ]);
         }
         catch (\Exception $e) {
-            Session::flash('error', 'Sitemap generation failed: ' . $e->getMessage());
-            Redirect::to('admin/tools');
+            View::json(['success' => false, 'message' => 'Sitemap generation failed: ' . $e->getMessage()], 500);
         }
     }
 
@@ -183,8 +184,7 @@ class AdminToolsController extends AdminController
     {
         // Verify CSRF token
         if (!Csrf::verify()) {
-            Session::flash('error', 'Invalid security token');
-            Redirect::to('admin/tools');
+            View::json(['success' => false, 'message' => 'Invalid security token'], 403);
             return;
         }
 
@@ -205,12 +205,14 @@ class AdminToolsController extends AdminController
             $robotsFile = Path::base() . 'public/robots.txt';
             File::write($robotsFile, $content);
 
-            Session::flash('success', 'Robots.txt generated successfully!');
-            Redirect::to('admin/tools');
+            View::json([
+                'success' => true,
+                'message' => 'Robots.txt generated successfully!',
+                'robotsUrl' => Url::base() . 'robots.txt'
+            ]);
         }
         catch (\Exception $e) {
-            Session::flash('error', 'Robots.txt generation failed: ' . $e->getMessage());
-            Redirect::to('admin/tools');
+            View::json(['success' => false, 'message' => 'Robots.txt generation failed: ' . $e->getMessage()], 500);
         }
     }
 
