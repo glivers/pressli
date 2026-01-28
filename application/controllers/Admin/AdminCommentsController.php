@@ -43,11 +43,15 @@ class AdminCommentsController extends AdminController
         // Get status counts for tabs
         $statusCounts = Comment::getStatusCounts();
 
-        View::render('admin/comments', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Comments',
             'comments' => $comments,
-            'statusCounts' => $statusCounts
-        ]);
+            'statusCounts' => $statusCounts,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/comments', $data);
     }
 
     /**
