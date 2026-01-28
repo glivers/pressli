@@ -169,10 +169,11 @@ return array(
 	'admin/tags' 		=> 'Admin\AdminTags',    
 	'admin/media' 		=> 'Admin\AdminMedia',    
 	'admin/comments'	=> 'Admin\AdminComments',    
-	'admin/menus' 		=> 'Admin\AdminMenus',    
-	'admin/themes' 		=> 'Admin\AdminThemes',    
-	'admin/plugins' 	=> 'Admin\AdminPlugins',    
-	'admin/settings'	=> 'Admin\AdminSettings',  
+	'admin/menus' 		=> 'Admin\AdminMenus',
+	'admin/themes' 		=> 'Admin\AdminThemes',
+	'admin/plugins' 	=> 'Admin\AdminPlugins',
+	'admin/settings'	=> 'Admin\AdminSettings',
+	'admin/tools'		=> 'Admin\AdminTools',  
 
 	// ============================================================================
 	// API ROUTES
