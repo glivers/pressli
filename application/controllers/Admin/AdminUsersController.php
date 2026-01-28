@@ -60,12 +60,16 @@ class AdminUsersController extends AdminController
             $roleCounts[$role['name']] = $count;
         }
 
-        View::render('admin/users', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Users',
             'users' => $users,
             'roleCounts' => $roleCounts,
-            'totalUsers' => count($users)
-        ]);
+            'totalUsers' => count($users),
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/users', $data);
     }
 
     /**
@@ -79,10 +83,14 @@ class AdminUsersController extends AdminController
     {
         $roles = RoleModel::order('name', 'asc')->all();
 
-        View::render('admin/users-add', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Add New User',
-            'roles' => $roles
-        ]);
+            'roles' => $roles,
+            'settings' => $this->settings
+        ];
+        
+        View::render('admin/users-add', $data);
     }
 
     /**
@@ -168,11 +176,15 @@ class AdminUsersController extends AdminController
 
         $roles = RoleModel::order('name', 'asc')->all();
 
-        View::render('admin/users-profile', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Edit User',
             'user' => $user,
-            'roles' => $roles
-        ]);
+            'roles' => $roles,
+            'settings' => $this->settings
+        ];
+        
+        View::render('admin/users-profile', $data);
     }
 
     /**
