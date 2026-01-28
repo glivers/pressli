@@ -132,7 +132,7 @@ class PageController extends Controller
         $this->siteSettings = SettingModel::getAutoload();
 
         // STEP 2: Get active theme from settings (fallback to 'aurora')
-        $activeTheme = $this->siteSettings['active_theme'] ?? 'aurora';
+        $activeTheme = $this->siteSettings['active_theme'];
 
         // STEP 3: Load theme configuration
         $this->themeConfig = ThemeConfig::load($activeTheme);
@@ -293,12 +293,12 @@ class PageController extends Controller
             $data['customCSS'] = $this->customCSS;
             View::render($template, $data);
             return;
-        }
+        } 
 
         // STEP 3: Fetch content (unified query for all types)
         $content = PostModel::select([
                 'id', 'title', 'slug', 'content', 'excerpt', 'featured_image_id',
-                'published_at', 'updated_at', 'view_count', 'type'
+                'published_at', 'updated_at', 'view_count', 'type', 'template'
             ])
             ->leftJoin('users', 'author_id = id', ['first_name', 'last_name', 'email', 'avatar'])
             ->leftJoin('media', 'featured_image_id = media.id', ['file_path as featured_image', 'alt_text as featured_image_alt', 'title as featured_image_title'])
@@ -409,7 +409,7 @@ class PageController extends Controller
         $context = ['page' => $content];
 
         // Get provider requirements from theme.json
-        $providers = $this->themeConfig->getProviders('page');
+        $providers = $this->themeConfig->getProviders('page', $content['template']);
 
         $providerData = ProviderRegistry::getBatch($providers, $context);
 
@@ -448,7 +448,7 @@ class PageController extends Controller
 
         // Get theme name and template from config
         $themeName = $this->themeConfig->getName();
-        $template = $this->themeConfig->getTemplate('page');
+        $template = $this->themeConfig->getTemplate('page', $content['template']);
         $template = str_replace('.php', '', $template);
 
         // Add custom CSS to data
@@ -488,7 +488,7 @@ class PageController extends Controller
     {
         $content = PostModel::select([
                 'id', 'title', 'slug', 'content', 'excerpt', 'featured_image_id',
-                'published_at', 'updated_at', 'view_count', 'type'
+                'published_at', 'updated_at', 'view_count', 'type', 'template'
             ])
             ->leftJoin('users', 'author_id = id', ['first_name', 'last_name', 'email', 'avatar'])
             ->leftJoin('media', 'featured_image_id = media.id', ['file_path as featured_image', 'alt_text as featured_image_alt', 'title as featured_image_title'])
@@ -505,7 +505,7 @@ class PageController extends Controller
 
         // Fetch data via providers
         $context = ['page' => $content];
-        $providers = $this->themeConfig->getProviders('page');
+        $providers = $this->themeConfig->getProviders('page', $content['template']);
         $providerData = ProviderRegistry::getBatch($providers, $context);
 
         $data = [
@@ -540,7 +540,7 @@ class PageController extends Controller
         $data = array_merge($data, $providerData);
 
         $themeName = $this->themeConfig->getName();
-        $template = $this->themeConfig->getTemplate('page');
+        $template = $this->themeConfig->getTemplate('page', $content['template']);
         $template = str_replace('.php', '', $template);
 
         // Add custom CSS to data
