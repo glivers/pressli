@@ -48,11 +48,15 @@ class AdminCategoriesController extends AdminController
         // Get total count for statistics display
         $totalCount = Taxonomy::count('category');
 
-        View::render('admin/categories', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Categories',
             'categories' => $categories,
-            'totalCount' => $totalCount
-        ]);
+            'totalCount' => $totalCount,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/categories', $data);
     }
 
     /**
@@ -68,10 +72,14 @@ class AdminCategoriesController extends AdminController
         // Get all categories for parent dropdown
         $categories = Taxonomy::getAll('category');
 
-        View::render('admin/categories-new', [
+        // Array of data to send to view
+        $data = [
             'title' => 'New Category',
-            'categories' => $categories
-        ]);
+            'categories' => $categories,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/categories-new', $data);
     }
 
     /**
@@ -127,11 +135,15 @@ class AdminCategoriesController extends AdminController
         // Get all categories except current one for parent dropdown
         $categories = Taxonomy::getAllExcept('category', $id);
 
-        View::render('admin/categories-edit', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Edit Category',
             'category' => $category,
-            'categories' => $categories
-        ]);
+            'categories' => $categories,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/categories-edit', $data);
     }
 
     /**
