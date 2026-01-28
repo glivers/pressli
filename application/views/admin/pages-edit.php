@@ -108,15 +108,15 @@
                             <div class="publish-options">
                                 <div class="publish-option">
                                     <span class="option-label">Status:</span>
-                                    <select name="status" class="option-value" style="border: none; background: transparent; padding: 0; font-size: inherit;">
-                                        <option value="draft" {{ $page['status'] === 'draft' ? 'selected' : '' }}>Draft</option>
-                                        <option value="published" {{ $page['status'] === 'published' ? 'selected' : '' }}>Published</option>
-                                    </select>
+                                    <span name="status" class="option-value" style="border: none; background: transparent; padding: 0; font-size: inherit;">
+                                        {{ $page['status'] }}                                        
+                                    </span>
                                 </div>
                             </div>
                         </div>
                         <div class="panel-footer">
-                            <button type="submit" class="btn btn-secondary btn-block">
+                            <input type="hidden" name="status" value="" id="page-status">
+                            <button type="submit" class="btn btn-secondary btn-block" id="submit-draft">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                                     <polyline points="17 21 17 13 7 13 7 21"></polyline>
@@ -124,12 +124,12 @@
                                 </svg>
                                 Save Draft
                             </button>
-                            <button type="submit" class="btn btn-primary btn-block">
+                            <button type="submit" class="btn btn-primary btn-block" id="submit-publish">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                 </svg>
-                                Update
+                                Publish
                             </button>
                         </div>
                     </div>
@@ -155,9 +155,11 @@
                             <div class="form-group">
                                 <label class="form-label" for="template">Template</label>
                                 <select name="template" id="template" class="form-select">
-                                    <option value="default" {{ $page['template'] === 'default' ? 'selected' : '' }}>Default</option>
-                                    <option value="full-width" {{ $page['template'] === 'full-width' ? 'selected' : '' }}>Full Width</option>
-                                    <option value="landing" {{ $page['template'] === 'landing' ? 'selected' : '' }}>Landing Page</option>
+                                    @foreach($pageTemplates as $slug => $config)
+                                        <option value="{{ $slug }}" {{ $page['template'] === $slug ? 'selected' : '' }}>
+                                            {{ $config['label'] }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -393,5 +395,15 @@
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
+
+        var setDraft = document.getElementById('submit-draft');
+        setDraft.addEventListener('click', function(){
+            document.getElementById('page-status').value = 'draft';
+        });
+
+        var setPublish = document.getElementById('submit-publish');
+        setPublish.addEventListener('click', function(){
+            document.getElementById('page-status').value = 'published';
+        });
         </script>
 @endsection
