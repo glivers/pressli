@@ -140,7 +140,7 @@
                             </div>
                         </div>
                         <div class="panel-footer">
-                            <button type="submit" class="btn btn-secondary btn-block">
+                            <button type="submit" class="btn btn-secondary btn-block" id="submit-draft">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                                     <polyline points="17 21 17 13 7 13 7 21"></polyline>
@@ -148,12 +148,12 @@
                                 </svg>
                                 Save Draft
                             </button>
-                            <button type="submit" class="btn btn-primary btn-block">
+                            <button type="submit" class="btn btn-primary btn-block" id="submit-publish">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                 </svg>
-                                Update
+                                Publish
                             </button>
                         </div>
                     </div>
@@ -433,5 +433,16 @@
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
+
+        // Code to auto set draft/publish status based on the button clicked
+        var setDraft = document.getElementById('submit-draft');
+        setDraft.addEventListener('click', function(){
+            document.getElementById('status').value = 'draft';
+        });
+
+        var setPublish = document.getElementById('submit-publish');
+        setPublish.addEventListener('click', function(){
+            document.getElementById('status').value = 'published';
+        });
         </script>
 @endsection
