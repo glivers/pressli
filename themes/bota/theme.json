@@ -1,0 +1,195 @@
+{
+    "name": "Bota Theme",
+    "version": "1.0.0",
+    "author": "Pressli Team",
+    "description": "A clean, modern theme for Pressli CMS",
+    "screenshot": "screenshot.png",
+    "requires": {
+        "php": "^7.4",
+        "pressli-cms": "^1.0"
+    },
+    "menu_locations": {
+        "primary_menu": "Primary Menu",
+        "footer_menu": "Footer Menu",
+        "social_menu": "Social Links",
+        "categories_menu": "Categories Menu",
+        "footer_links": "Footer Links"
+    },
+    "templates": {
+        "post": {
+            "template": "templates/single.php",
+            "data_providers": [
+                "site_menus",
+                "post_categories",
+                "comments_count",
+                "recent_posts",
+                "popular_posts",
+                "related_posts",
+                "categories_with_count"
+            ]
+        },
+        "archive": {
+            "template": "templates/archive.php",
+            "data_providers": [
+                "site_menus",
+                "recent_posts",
+                "popular_posts",
+                "categories_with_count"
+            ]
+        },
+        "404": {
+            "template": "templates/404.php",
+            "data_providers": [
+                "site_menus",
+                "recent_posts",
+                "categories_with_count"
+            ]
+        },
+        "home": {
+            "template": "templates/index.php",
+            "data_providers": [
+                "site_menus",
+                "recent_posts",
+                "popular_posts",
+                "categories_with_count"
+            ]
+        },
+        "page": {
+            "default": {
+                "label": "Default",
+                "template": "templates/pages/default.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },
+            "home": {
+                "label": "Home Page",
+                "template": "templates/pages/home.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },            
+            "about": {
+                "label": "About Us",
+                "template": "templates/pages/about.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },
+            "case-studies": {
+                "label": "Case Studies",
+                "template": "templates/pages/case-studies.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },
+            "contact": {
+                "label": "Contact Us",
+                "template": "templates/pages/contact.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },
+            "content-marketing": {
+                "label": "Content Marketing",
+                "template": "templates/pages/content-marketing.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },
+            "saas-audit": {
+                "label": "SaaS Audit",
+                "template": "templates/pages/saas-audit.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },
+            "keyword-research": {
+                "label": "Keyword Research",
+                "template": "templates/pages/keyword-research.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },
+            "link-building": {
+                "label": "Link Building",
+                "template": "templates/pages/link-building.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },
+            "privacy-policy": {
+                "label": "Privacy Policy",
+                "template": "templates/pages/privacy-policy.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },
+            "seo-strategy": {
+                "label": "SEO Strategy",
+                "template": "templates/pages/seo-strategy.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },
+            "services": {
+                "label": "Services",
+                "template": "templates/pages/services.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },
+            "technical-seo": {
+                "label": "Technical SEO",
+                "template": "templates/pages/technical-seo.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },
+            "terms-of-service": {
+                "label": "Terms of Service",
+                "template": "templates/pages/terms-of-service.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            },
+            "video-seo": {
+                "label": "Video SEO",
+                "template": "templates/pages/video-seo.php",
+                "data_providers": [
+                    "site_menus",
+                    "recent_posts",
+                    "categories_with_count"
+                ]
+            }
+        }
+    }
+}

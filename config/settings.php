@@ -106,7 +106,7 @@ return array(
 	 * admin user existence in database to prevent reinstallation attacks.
 	 * Even if this is set to false, installation cannot proceed if admin exists.
 	 */
-	'installed' => false,
+	'installed' => true,
 
 	// ============================================================================
 	// ENVIRONMENT CONFIGURATION

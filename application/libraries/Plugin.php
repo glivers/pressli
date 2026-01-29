@@ -144,7 +144,7 @@ abstract class Plugin
      * Run on plugin deactivation
      *
      * Called when plugin is deactivated in admin. Use this for cleanup tasks
-     * but DO NOT drop tables (user might reactivate). Unregister hooks if needed.
+     * but DO NOT drop tables or delete data (user might reactivate). Unregister hooks if needed.
      *
      * Example:
      *   public function deactivate() {
@@ -154,6 +154,26 @@ abstract class Plugin
      * @return void
      */
     public function deactivate()
+    {
+        // Override in child class if needed
+    }
+
+    /**
+     * Run on plugin uninstall/deletion
+     *
+     * Called when plugin is permanently deleted and user chose to delete plugin data.
+     * Use this to clean up PostMetaModel data, custom tables, or any other plugin-specific data.
+     * This is destructive and cannot be undone.
+     *
+     * Example:
+     *   public function uninstall() {
+     *       PostMetaModel::whereLike('meta_key', 'plugin_jobs:%')->delete();
+     *       $this->dropTables();
+     *   }
+     *
+     * @return void
+     */
+    public function uninstall()
     {
         // Override in child class if needed
     }

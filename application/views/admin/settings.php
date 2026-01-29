@@ -23,7 +23,9 @@
             <form method="POST" action="{{ Url::link('admin/settings/update') }}">
                 {{{ Csrf::field() }}}
 
-                <div class="settings-container">
+            <div class="settings-container">
+            <!-- Divide into two columns grid -->
+            <div class="settings-grid">
                 <!-- General Settings -->
                 <div class="card">
                     <div class="card-header">
@@ -334,8 +336,24 @@
                     </div>
                 </div>
             </div>
+            </div>
             </form>
         </main>
+
+<style>
+.settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+@media (max-width: 968px) {
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
 @endsection
 
 @section('scripts')

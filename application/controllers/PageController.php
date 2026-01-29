@@ -60,6 +60,7 @@ use Rackage\Redirect;
 use Lib\ThemeConfig;
 use Models\PostModel;
 use Lib\CoreProviders;
+use Lib\PluginManager;
 use Rackage\Controller;
 use Models\SettingModel;
 use Models\CommentModel;
@@ -105,17 +106,19 @@ class PageController extends Controller
     protected $customCSS;
 
     /**
-     * Constructor - load settings, register providers, load theme config
+     * Constructor - load settings, register providers, load plugins, load theme config
      *
      * Execution order:
      * 0. Check if CMS is installed (redirect to /install if not)
      * 1. Load autoload settings from database (single query)
      * 2. Get active theme name from settings
      * 3. Load theme configuration from theme.json
-     * 4. Register core data providers
+     * 4. Load custom CSS from theme customizer
+     * 5. Register core data providers
+     * 6. Load all active plugins (registers content types and routes)
      *
      * Called once per request before any controller methods execute.
-     * Providers and theme config become available to all methods.
+     * Providers, plugins, and theme config become available to all methods.
      *
      * @return void
      */
@@ -143,6 +146,9 @@ class PageController extends Controller
 
         // STEP 5: Register all core providers (recent_posts, popular_posts, categories, etc.)
         CoreProviders::register();
+
+        // STEP 6: Load all active plugins (registers content types and routes)
+        PluginManager::load();
     }
     /**
      * Display homepage
