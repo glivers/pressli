@@ -34,14 +34,24 @@ class AdminPluginsController extends AdminController
     /**
      * Display list of all installed plugins
      *
-     * Shows plugins with their status (active/inactive), version, author,
-     * and action buttons (activate/deactivate/delete).
+     * Auto-scans plugins directory to sync with database,
+     * then displays all plugins with their status and action buttons.
      *
      * @return void
      */
     public function getIndex()
     {
+        // Auto-scan to sync plugins directory with database
+        PluginManager::scan();
+
         $plugins = PluginModel::order('name', 'asc')->all();
+
+        // Parse JSON config for each plugin
+        foreach ($plugins as &$plugin) {
+            if (!empty($plugin['config'])) {
+                $plugin['config'] = json_decode($plugin['config'], true);
+            }
+        }
 
         $data = [
             'title' => 'Plugins',
