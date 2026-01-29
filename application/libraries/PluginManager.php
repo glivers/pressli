@@ -2,6 +2,7 @@
 
 use Models\PluginModel;
 use Lib\Plugin;
+use Rackage\Path;
 
 /**
  * Plugin Manager - Pressli CMS
@@ -73,7 +74,17 @@ use Lib\Plugin;
 class PluginManager
 {
     private static $loadedPlugins = [];
-    private static $pluginsPath = 'plugins/';
+    private static $pluginsPath = 'plugins' . DIRECTORY_SEPARATOR;
+
+    /**
+     * Get full plugins directory path
+     *
+     * @return string Absolute path to plugins directory
+     */
+    private static function pluginsPath()
+    {
+        return Path::base() . self::$pluginsPath;
+    }
 
     /**
      * Scan plugins directory and sync with database
@@ -90,12 +101,14 @@ class PluginManager
             'removed' => 0
         ];
 
-        $pluginsPath = self::$pluginsPath;
+        $pluginsPath = self::pluginsPath();
         $directories = glob($pluginsPath . '*', GLOB_ONLYDIR);
 
         if (!$directories) {
             return $results;
         }
+
+
 
         $foundSlugs = [];
 
@@ -204,7 +217,7 @@ class PluginManager
         // 'jobs' → 'Jobs', 'directory-listing' → 'DirectoryListing'
         $dirName = str_replace('-', '', ucwords($slug, '-'));
 
-        $pluginPath = self::$pluginsPath . $dirName;
+        $pluginPath = self::pluginsPath() . $dirName;
         $pluginFile = $pluginPath . '/' . $dirName . 'Plugin.php';
 
         if (!file_exists($pluginFile)) {
@@ -314,7 +327,7 @@ class PluginManager
 
         // Convert slug to PascalCase directory name for deletion
         $dirName = str_replace('-', '', ucwords($slug, '-'));
-        $pluginPath = self::$pluginsPath . $dirName;
+        $pluginPath = self::pluginsPath() . $dirName;
 
         if (is_dir($pluginPath)) {
             self::deleteDirectory($pluginPath);
