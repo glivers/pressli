@@ -56,7 +56,6 @@ class AdminSettingsController extends Controller
             'title' => 'Settings',
             'settings' => $settings,
             'pages' => $pages,
-            'settings' => $this->settings
         ];
 
         View::render('admin/settings', $data);
@@ -90,6 +89,7 @@ class AdminSettingsController extends Controller
             // Reading
             'homepage_type' => Input::post('homepage-type', 'posts'),
             'homepage_page_id' => Input::post('homepage-page-id', ''),
+            'posts_page_id' => Input::post('posts-page-id', ''),
             'posts_per_page' => Input::post('posts-per-page', '10'),
             'syndication_feeds' => Input::post('syndication-feeds', '10'),
             'search_engine_visibility' => Input::post('search-engine-visibility', '0'),
