@@ -366,7 +366,7 @@ class Menu
      *
      * @return array Array of menu records with item counts
      */
-    public static function getAll()
+    public static function all()
     {
         // Fetch all active menus
         $menus = MenuModel::select(['id', 'name', 'slug', 'location', 'status'])
