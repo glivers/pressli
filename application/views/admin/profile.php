@@ -63,6 +63,12 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="tagline">Tagline</label>
+                    <input type="text" id="tagline" name="tagline" value="{{ $user['tagline'] or '' }}" placeholder="e.g. Senior SEO Strategist at Pressli">
+                    <p class="form-help">Professional tagline or descriptor (displayed on posts)</p>
+                </div>
+
+                <div class="form-group">
                     <label for="bio">Bio</label>
                     <textarea id="bio" name="bio" rows="4">{{ $user['bio'] or '' }}</textarea>
                 </div>
