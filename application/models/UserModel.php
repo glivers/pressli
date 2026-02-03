@@ -110,6 +110,14 @@ class UserModel extends Model
     protected $bio;
 
     /**
+     * Professional tagline or descriptor
+     * @column
+     * @varchar 255
+     * @nullable
+     */
+    protected $tagline;
+
+    /**
      * User's website URL
      * @column
      * @varchar 255
