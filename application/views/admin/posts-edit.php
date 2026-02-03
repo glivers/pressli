@@ -250,13 +250,15 @@
                     container: [
                         [{ 'header': [1, 2, 3, false] }],
                         ['bold', 'italic', 'underline', 'strike'],
-                        ['link', 'image'],
+                        ['blockquote', 'code-block'],
+                        ['link', 'image', 'video'],
                         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                         [{ 'align': [] }],
                         ['clean']
                     ],
                     handlers: {
-                        image: imageHandler
+                        image: imageHandler,
+                        video: videoHandler
                     }
                 }
             }
@@ -276,6 +278,77 @@
                 quill.setSelection(range.index + 1);
             });
             picker.open();
+        }
+
+        // Custom video handler - shows inline input for URL
+        function videoHandler() {
+            const range = quill.getSelection(true);
+
+            // Create inline input overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                z-index: 1000;
+                min-width: 400px;
+            `;
+
+            overlay.innerHTML = `
+                <div style="margin-bottom: 12px; font-weight: 600; color: #1f2937;">Insert Video</div>
+                <input type="text" id="video-url-input" placeholder="Paste YouTube or Vimeo URL..."
+                    style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px; margin-bottom: 12px;">
+                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                    <button id="video-cancel-btn" style="padding: 8px 16px; border: 1px solid #d1d5db; background: white; border-radius: 4px; cursor: pointer; font-size: 14px;">Cancel</button>
+                    <button id="video-insert-btn" style="padding: 8px 16px; background: #4f46e5; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">Insert</button>
+                </div>
+            `;
+
+            document.body.appendChild(overlay);
+            const input = document.getElementById('video-url-input');
+            input.focus();
+
+            // Handle insert
+            function insertVideo() {
+                const url = input.value.trim();
+                if (!url) return;
+
+                // Convert to embed URL
+                let embedUrl = url;
+
+                // YouTube
+                if (url.match(/youtube\.com\/watch\?v=|youtu\.be\//)) {
+                    const videoId = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?]+)/)[1];
+                    embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                }
+                // Vimeo
+                else if (url.match(/vimeo\.com\/(\d+)/)) {
+                    const videoId = url.match(/vimeo\.com\/(\d+)/)[1];
+                    embedUrl = `https://player.vimeo.com/video/${videoId}`;
+                }
+
+                // Create wrapper HTML
+                const videoHtml = `<div class="video-wrapper"><iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
+
+                // Insert at cursor position
+                quill.clipboard.dangerouslyPasteHTML(range.index, videoHtml);
+                quill.setSelection(range.index + 1);
+
+                overlay.remove();
+            }
+
+            // Event listeners
+            document.getElementById('video-insert-btn').addEventListener('click', insertVideo);
+            document.getElementById('video-cancel-btn').addEventListener('click', () => overlay.remove());
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') insertVideo();
+                if (e.key === 'Escape') overlay.remove();
+            });
         }
 
         // Featured image handler
