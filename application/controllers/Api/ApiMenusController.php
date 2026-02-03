@@ -49,7 +49,7 @@ class ApiMenusController extends ApiController
     public function getIndex()
     {
         // Get all menus with item counts
-        $menus = Menu::getAll();
+        $menus = Menu::all();
 
         // Return JSON response
         View::json([
