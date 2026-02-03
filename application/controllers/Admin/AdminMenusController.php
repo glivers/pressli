@@ -49,7 +49,7 @@ class AdminMenusController extends AdminController
     public function getIndex()
     {
         // Fetch all menus with item counts
-        $menus = Menu::getAll();
+        $menus = Menu::all();
 
         // Get selected menu (first menu or from query param)
         $selectedMenuId = Input::get('menu_id') ?: ($menus[0]['id'] ?? null);
@@ -308,6 +308,7 @@ class AdminMenusController extends AdminController
             ->where('type', 'page')
             ->where('status', 'published')
             ->order('title', 'asc')
+            ->whereNull('deleted_at')
             ->all();
 
         View::json(['pages' => $pages]);
@@ -325,6 +326,7 @@ class AdminMenusController extends AdminController
     {
         $categories = TaxonomyModel::select(['id', 'name', 'slug'])
             ->where('type', 'category')
+            ->whereNull('deleted_at')
             ->order('name', 'asc')
             ->all();
 
