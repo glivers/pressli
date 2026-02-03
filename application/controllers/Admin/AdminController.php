@@ -153,6 +153,7 @@ class AdminController extends Controller
         $email = Input::post('email');
         $firstName = Input::post('first-name');
         $lastName = Input::post('last-name');
+        $tagline = Input::post('tagline');
         $bio = Input::post('bio');
         $website = Input::post('website');
         $twitter = Input::post('twitter');
@@ -180,7 +181,7 @@ class AdminController extends Controller
 
         // Check email uniqueness excluding current user
         $existingEmail = UserModel::where('email', $email)
-            ->where('id !=', $userId)
+            ->where('id != ?', $userId)
             ->first();
 
         if ($existingEmail) {
@@ -194,6 +195,7 @@ class AdminController extends Controller
             'email' => $email,
             'first_name' => $firstName,
             'last_name' => $lastName,
+            'tagline' => $tagline,
             'bio' => $bio,
             'website' => $website,
             'twitter' => $twitter,
