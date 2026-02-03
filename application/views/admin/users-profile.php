@@ -98,13 +98,19 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label" for="website">Website</label>
-                                <input type="url" id="website" class="text-input" value="https://pressli.com" placeholder="https://">
+                                <label class="form-label" for="tagline">Tagline</label>
+                                <input type="text" id="tagline" name="tagline" class="text-input" value="{{ $user['tagline'] or '' }}" placeholder="e.g. Senior SEO Strategist at Pressli">
+                                <p class="form-help">Professional tagline or descriptor (displayed on posts)</p>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label" for="bio">Biographical Info</label>
                                 <textarea id="bio" class="textarea-input" rows="5" placeholder="Write a short bio about yourself...">Passionate CMS developer and content creator. Building better web experiences one project at a time.</textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="website">Website</label>
+                                <input type="url" id="website" class="text-input" value="https://pressli.com" placeholder="https://">
                             </div>
 
                             <div class="form-actions">
