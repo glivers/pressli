@@ -298,7 +298,7 @@ class PageController extends Controller
             // Render with plugin data
             $data['customCSS'] = $this->customCSS;
             View::render($template, $data);
-            return;
+            return; 
         } 
 
         // STEP 3: Fetch content (unified query for all types)
@@ -306,8 +306,8 @@ class PageController extends Controller
                 'id', 'title', 'slug', 'content', 'excerpt', 'featured_image_id',
                 'published_at', 'updated_at', 'view_count', 'type', 'template'
             ])
-            ->leftJoin('users', 'author_id = id', ['first_name', 'last_name', 'email', 'avatar'])
-            ->leftJoin('media', 'featured_image_id = media.id', ['file_path as featured_image', 'alt_text as featured_image_alt', 'title as featured_image_title'])
+            ->leftJoin('users', 'author_id = id', ['first_name', 'last_name', 'email', 'avatar', 'bio', 'tagline'])
+            ->leftJoin('media', 'featured_image_id = id', ['file_path as featured_image', 'alt_text as featured_image_alt', 'title as featured_image_title'])
             ->where('slug', $slug)
             ->where('status', 'published')
             ->whereNull('deleted_at')
@@ -316,6 +316,13 @@ class PageController extends Controller
         // Content not found - show 404
         if (!$content) {
             $this->show404();
+            return;
+        }
+
+        // Check if this page is designated as the posts archive page
+        $postsPageId = $this->siteSettings['posts_page_id'] ?? null;
+        if ($postsPageId && $content['id'] == $postsPageId) {
+            $this->renderArchive();
             return;
         }
 
@@ -369,6 +376,9 @@ class PageController extends Controller
                 'author_name' => trim(($content['first_name'] ?? '') . ' ' . ($content['last_name'] ?? '')),
                 'author_email' => $content['email'] ?? null,
                 'author_avatar' => $content['avatar'] ?? null,
+                'author_bio' => $content['bio'] ?? null,
+                'author_tagline' => $content['tagline'] ?? null,
+                'author_title' => $content['title'] ?? null,
             ],
             'site' => [
                 'name' => $this->siteSettings['site_title'] ?? 'Pressli',
@@ -572,10 +582,10 @@ class PageController extends Controller
 
         // Build query
         $query = PostModel::select([
-                'id', 'title', 'slug', 'excerpt', 'featured_image_id', 'published_at'
+                'id', 'title', 'slug', 'excerpt', 'featured_image_id', 'published_at', 'content'
             ])
             ->leftJoin('users', 'author_id = id', ['first_name', 'last_name'])
-            ->leftJoin('media', 'featured_image_id = media.id', ['file_path as featured_image', 'alt_text as featured_image_alt', 'title as featured_image_title'])
+            ->leftJoin('media', 'featured_image_id = id', ['file_path as featured_image', 'alt_text as featured_image_alt', 'title as featured_image_title'])
             ->where('posts.type', 'post')
             ->where('posts.status', 'published')
             ->whereNull('posts.deleted_at')
@@ -605,7 +615,8 @@ class PageController extends Controller
 
         if($categorySlug !== null || $tagSlug !== null){
             if(count($result['data']) > 0){
-               $taxonomy = $result['data'][0]['taxonomy_name'];
+               $taxonomy['name'] = $result['data'][0]['taxonomy_name'];
+               $taxonomy['slug'] = $categorySlug || $tagSlug;
             }
         }
 
