@@ -415,7 +415,7 @@ return array(
 		'Rackage\Path',
 		'Rackage\Html',
 		'Rackage\File',
-		'Rackage\CSRF',
+		'Rackage\Csrf',
 		'Rackage\Date',
 		'Rackage\Input',
 		'Rackage\Cookie',
