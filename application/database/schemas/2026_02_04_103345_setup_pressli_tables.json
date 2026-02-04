@@ -25,7 +25,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "token": {
@@ -34,7 +34,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "times_used": {
@@ -61,7 +61,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "created_at": {
@@ -150,7 +150,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "author_email": {
@@ -159,7 +159,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "author_url": {
@@ -168,7 +168,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "author_ip": {
@@ -177,7 +177,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "content": {
@@ -186,7 +186,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "status": {
@@ -195,7 +195,7 @@
                 "default": "'pending'",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "parent_id": {
@@ -315,7 +315,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "file_path": {
@@ -324,7 +324,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "file_type": {
@@ -333,7 +333,7 @@
                 "default": "'other'",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "mime_type": {
@@ -342,7 +342,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "file_size": {
@@ -378,7 +378,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "title": {
@@ -387,7 +387,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "description": {
@@ -396,7 +396,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "author_id": {
@@ -501,7 +501,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "slug": {
@@ -510,7 +510,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "location": {
@@ -519,7 +519,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "status": {
@@ -528,7 +528,7 @@
                 "default": "'active'",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "created_at": {
@@ -625,7 +625,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "url": {
@@ -634,7 +634,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "target": {
@@ -643,7 +643,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "css_classes": {
@@ -652,7 +652,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "sort_order": {
@@ -670,7 +670,7 @@
                 "default": "'active'",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "created_at": {
@@ -757,7 +757,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "description": {
@@ -766,7 +766,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "category": {
@@ -775,7 +775,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             }
         },
@@ -805,6 +805,136 @@
         "charset": "utf8mb4",
         "table_comment": null
     },
+    "plugins": {
+        "columns": {
+            "id": {
+                "type": "int(11) unsigned",
+                "nullable": false,
+                "default": null,
+                "extra": "auto_increment",
+                "charset": null,
+                "collation": null,
+                "comment": null
+            },
+            "slug": {
+                "type": "varchar(100)",
+                "nullable": false,
+                "default": null,
+                "extra": "",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci",
+                "comment": null
+            },
+            "name": {
+                "type": "varchar(255)",
+                "nullable": false,
+                "default": null,
+                "extra": "",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci",
+                "comment": null
+            },
+            "version": {
+                "type": "varchar(20)",
+                "nullable": false,
+                "default": null,
+                "extra": "",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci",
+                "comment": null
+            },
+            "description": {
+                "type": "text",
+                "nullable": true,
+                "default": "NULL",
+                "extra": "",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci",
+                "comment": null
+            },
+            "author": {
+                "type": "varchar(100)",
+                "nullable": true,
+                "default": "NULL",
+                "extra": "",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci",
+                "comment": null
+            },
+            "author_uri": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "extra": "",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci",
+                "comment": null
+            },
+            "status": {
+                "type": "enum('active','inactive')",
+                "nullable": false,
+                "default": "'inactive'",
+                "extra": "",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci",
+                "comment": null
+            },
+            "config": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "extra": "",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_bin",
+                "comment": null
+            },
+            "created_at": {
+                "type": "datetime",
+                "nullable": true,
+                "default": "NULL",
+                "extra": "",
+                "charset": null,
+                "collation": null,
+                "comment": null
+            },
+            "updated_at": {
+                "type": "datetime",
+                "nullable": true,
+                "default": "NULL",
+                "extra": "",
+                "charset": null,
+                "collation": null,
+                "comment": null
+            }
+        },
+        "indexes": {
+            "slug_unique": {
+                "unique": true,
+                "type": "BTREE",
+                "columns": [
+                    "slug"
+                ]
+            },
+            "status_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "status"
+                ]
+            }
+        },
+        "primary_key": [
+            "id"
+        ],
+        "foreign_keys": [],
+        "check_constraints": {
+            "config": "json_valid(`config`)"
+        },
+        "partition": null,
+        "engine": "InnoDB",
+        "charset": "utf8mb4",
+        "table_comment": null
+    },
     "posts": {
         "columns": {
             "id": {
@@ -822,7 +952,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "slug": {
@@ -831,7 +961,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "content": {
@@ -840,7 +970,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "excerpt": {
@@ -849,7 +979,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "author_id": {
@@ -867,7 +997,7 @@
                 "default": "'draft'",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "visibility": {
@@ -876,7 +1006,7 @@
                 "default": "'public'",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "password": {
@@ -885,7 +1015,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "featured_image_id": {
@@ -939,7 +1069,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "meta_description": {
@@ -948,7 +1078,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "created_at": {
@@ -984,7 +1114,7 @@
                 "default": "'post'",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "parent_id": {
@@ -1002,7 +1132,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "menu_order": {
@@ -1124,6 +1254,87 @@
         "charset": "utf8mb4",
         "table_comment": null
     },
+    "post_meta": {
+        "columns": {
+            "id": {
+                "type": "int(11) unsigned",
+                "nullable": false,
+                "default": null,
+                "extra": "auto_increment",
+                "charset": null,
+                "collation": null,
+                "comment": null
+            },
+            "post_id": {
+                "type": "int(11) unsigned",
+                "nullable": false,
+                "default": null,
+                "extra": "",
+                "charset": null,
+                "collation": null,
+                "comment": null
+            },
+            "meta_key": {
+                "type": "varchar(255)",
+                "nullable": false,
+                "default": null,
+                "extra": "",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci",
+                "comment": null
+            },
+            "meta_value": {
+                "type": "longtext",
+                "nullable": true,
+                "default": "NULL",
+                "extra": "",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci",
+                "comment": null
+            }
+        },
+        "indexes": {
+            "idx_post_id_meta_key": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "post_id",
+                    "meta_key"
+                ]
+            },
+            "meta_key_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "meta_key"
+                ]
+            },
+            "post_id_index": {
+                "unique": false,
+                "type": "BTREE",
+                "columns": [
+                    "post_id"
+                ]
+            }
+        },
+        "primary_key": [
+            "id"
+        ],
+        "foreign_keys": {
+            "fk_post_meta_post_id": {
+                "column": "post_id",
+                "referenced_table": "posts",
+                "referenced_column": "id",
+                "on_delete": "CASCADE",
+                "on_update": "RESTRICT"
+            }
+        },
+        "check_constraints": [],
+        "partition": null,
+        "engine": "InnoDB",
+        "charset": "utf8mb4",
+        "table_comment": null
+    },
     "post_taxonomies": {
         "columns": {
             "id": {
@@ -1220,7 +1431,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "description": {
@@ -1229,7 +1440,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             }
         },
@@ -1348,7 +1559,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "value": {
@@ -1357,7 +1568,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "autoload": {
@@ -1421,7 +1632,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "slug": {
@@ -1430,7 +1641,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "type": {
@@ -1439,7 +1650,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "description": {
@@ -1448,7 +1659,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "sort_order": {
@@ -1580,7 +1791,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "email": {
@@ -1589,7 +1800,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "password": {
@@ -1598,7 +1809,7 @@
                 "default": null,
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "first_name": {
@@ -1607,7 +1818,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "last_name": {
@@ -1616,7 +1827,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "role_id": {
@@ -1634,7 +1845,7 @@
                 "default": "'active'",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "avatar": {
@@ -1643,7 +1854,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "bio": {
@@ -1652,7 +1863,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "website": {
@@ -1661,7 +1872,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "twitter": {
@@ -1670,7 +1881,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "facebook": {
@@ -1679,7 +1890,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "linkedin": {
@@ -1688,7 +1899,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "github": {
@@ -1697,7 +1908,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "last_login": {
@@ -1742,7 +1953,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "reset_token": {
@@ -1751,7 +1962,7 @@
                 "default": "NULL",
                 "extra": "",
                 "charset": "utf8mb4",
-                "collation": "utf8mb4_unicode_ci",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             },
             "reset_token_expires": {
@@ -1761,6 +1972,15 @@
                 "extra": "",
                 "charset": null,
                 "collation": null,
+                "comment": null
+            },
+            "tagline": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "extra": "",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_general_ci",
                 "comment": null
             }
         },
