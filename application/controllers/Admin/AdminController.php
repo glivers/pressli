@@ -26,6 +26,7 @@ use Rackage\Redirect;
 use Rackage\Security;
 use Rackage\Csrf;
 use Rackage\Controller;
+use Rackage\Registry;
 use Models\UserModel;
 use Models\TokenModel;
 use Models\SettingModel;
@@ -44,9 +45,16 @@ class AdminController extends Controller
      */
     public function __construct()
     {
-        // Check if user is authenticated
+        // STEP 0: Check if CMS is installed (must be first, before database queries)
+        $settings = Registry::settings();
+
+        if (!$settings['installed']) {
+            Redirect::to('install');
+        }
+
+        // STEP 1: Check if user is authenticated
         if (!Session::has('user_id')) {
-            
+
             // AJAX or API request expecting JSON
             if (Request::ajax()) {
                 View::halt(['error' => 'Unauthorized. Please login to access this resource.'], 401);
@@ -56,7 +64,7 @@ class AdminController extends Controller
             Redirect::to('login')->flash('error', 'Please login to access the admin panel');
         }
 
-        // Load settings from database and merge with controller $settings property
+        // STEP 2: Load settings from database and merge with controller $settings property
         $this->settings = array_merge(SettingModel::getAutoload(), $this->settings);
     }
 
