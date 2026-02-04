@@ -18,6 +18,7 @@
                     </svg>
                     <span class="breadcrumb-current">Edit Page</span>
                 </div>
+                <a href="{{ Url::link('admin/pages/new') }}" class="breadcrumb-link">+ Add New</a>
             </div>
 
             @if(Session::hasFlash('success'))
@@ -50,14 +51,15 @@
                         <span class="permalink-url">{{ Url::base() }}</span>
                         @if($page['status'] === 'published')
                             <a href="{{ Url::link($page['slug']) }}" target="_blank" class="permalink-link" style="color: #3b82f6; text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem;">
-                                {{ $page['slug'] }}
+                                <span class="permalink-display">{{ $page['slug'] }}</span>
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;">
                                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                                     <polyline points="15 3 21 3 21 9"></polyline>
                                     <line x1="10" y1="14" x2="21" y2="3"></line>
                                 </svg>
                             </a>
-                            <input type="hidden" name="slug" value="{{ $page['slug'] }}">
+                            <input type="text" name="slug" class="permalink-input" value="{{ $page['slug'] }}" style="display: none;">
+                            <button type="button" class="permalink-toggle-btn" style="margin-left: auto; font-size: 13px; color: #6b7280; text-decoration: underline; background: none; border: none; cursor: pointer; padding: 0;">Edit</button>
                         @else
                             <input type="text" name="slug" class="permalink-input" placeholder="auto-generated-from-title" value="{{ $page['slug'] }}">
                         @endif
@@ -108,15 +110,15 @@
                             <div class="publish-options">
                                 <div class="publish-option">
                                     <span class="option-label">Status:</span>
-                                    <select name="status" class="option-value" style="border: none; background: transparent; padding: 0; font-size: inherit;">
-                                        <option value="draft" {{ $page['status'] === 'draft' ? 'selected' : '' }}>Draft</option>
-                                        <option value="published" {{ $page['status'] === 'published' ? 'selected' : '' }}>Published</option>
-                                    </select>
+                                    <span name="status" class="option-value" style="border: none; background: transparent; padding: 0; font-size: inherit;">
+                                        {{ $page['status'] }}                                        
+                                    </span>
                                 </div>
                             </div>
                         </div>
                         <div class="panel-footer">
-                            <button type="submit" class="btn btn-secondary btn-block">
+                            <input type="hidden" name="status" value="" id="page-status">
+                            <button type="submit" class="btn btn-secondary btn-block" id="submit-draft">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                                     <polyline points="17 21 17 13 7 13 7 21"></polyline>
@@ -124,12 +126,12 @@
                                 </svg>
                                 Save Draft
                             </button>
-                            <button type="submit" class="btn btn-primary btn-block">
+                            <button type="submit" class="btn btn-primary btn-block" id="submit-publish">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                 </svg>
-                                Update
+                                Publish
                             </button>
                         </div>
                     </div>
@@ -155,9 +157,11 @@
                             <div class="form-group">
                                 <label class="form-label" for="template">Template</label>
                                 <select name="template" id="template" class="form-select">
-                                    <option value="default" {{ $page['template'] === 'default' ? 'selected' : '' }}>Default</option>
-                                    <option value="full-width" {{ $page['template'] === 'full-width' ? 'selected' : '' }}>Full Width</option>
-                                    <option value="landing" {{ $page['template'] === 'landing' ? 'selected' : '' }}>Landing Page</option>
+                                    @foreach($pageTemplates as $slug => $config)
+                                        <option value="{{ $slug }}" {{ $page['template'] === $slug ? 'selected' : '' }}>
+                                            {{ $config['label'] }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -392,6 +396,50 @@
                 toast.style.animation = 'slideOut 0.3s ease-out';
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
+        }
+
+        var setDraft = document.getElementById('submit-draft');
+        setDraft.addEventListener('click', function(){
+            document.getElementById('page-status').value = 'draft';
+        });
+
+        var setPublish = document.getElementById('submit-publish');
+        setPublish.addEventListener('click', function(){
+            document.getElementById('page-status').value = 'published';
+        });
+
+        // Permalink editing for published pages
+        const permalinkToggleBtn = document.querySelector('.permalink-toggle-btn');
+        const permalinkLink = document.querySelector('.permalink-link');
+        const permalinkDisplay = document.querySelector('.permalink-display');
+        const permalinkInput = document.querySelector('.permalink-wrapper input[name="slug"]');
+
+        if (permalinkToggleBtn) {
+            let isEditing = false;
+
+            permalinkToggleBtn.addEventListener('click', function() {
+                if (!isEditing) {
+                    // Switch to edit mode
+                    permalinkLink.style.display = 'none';
+                    permalinkInput.style.display = 'inline';
+                    permalinkInput.focus();
+                    permalinkInput.select();
+                    this.textContent = 'OK';
+                    this.style.color = '#3b82f6';
+                    isEditing = true;
+                }
+                else {
+                    // Switch back to display mode
+                    const newSlug = permalinkInput.value;
+                    permalinkDisplay.textContent = newSlug;
+                    permalinkLink.href = '{{ Url::base() }}' + newSlug;
+                    permalinkLink.style.display = 'inline-flex';
+                    permalinkInput.style.display = 'none';
+                    this.textContent = 'Edit';
+                    this.style.color = '#6b7280';
+                    isEditing = false;
+                }
+            });
         }
         </script>
 @endsection

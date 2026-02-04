@@ -60,12 +60,16 @@ class AdminUsersController extends AdminController
             $roleCounts[$role['name']] = $count;
         }
 
-        View::render('admin/users', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Users',
             'users' => $users,
             'roleCounts' => $roleCounts,
-            'totalUsers' => count($users)
-        ]);
+            'totalUsers' => count($users),
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/users', $data);
     }
 
     /**
@@ -79,10 +83,14 @@ class AdminUsersController extends AdminController
     {
         $roles = RoleModel::order('name', 'asc')->all();
 
-        View::render('admin/users-add', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Add New User',
-            'roles' => $roles
-        ]);
+            'roles' => $roles,
+            'settings' => $this->settings
+        ];
+        
+        View::render('admin/users-add', $data);
     }
 
     /**
@@ -168,11 +176,15 @@ class AdminUsersController extends AdminController
 
         $roles = RoleModel::order('name', 'asc')->all();
 
-        View::render('admin/users-profile', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Edit User',
             'user' => $user,
-            'roles' => $roles
-        ]);
+            'roles' => $roles,
+            'settings' => $this->settings
+        ];
+        
+        View::render('admin/users-profile', $data);
     }
 
     /**
@@ -201,6 +213,7 @@ class AdminUsersController extends AdminController
         $email = Input::post('email');
         $firstName = Input::post('first-name');
         $lastName = Input::post('last-name');
+        $tagline = Input::post('tagline');
         $bio = Input::post('bio');
         $website = Input::post('website');
         $twitter = Input::post('twitter');
@@ -240,6 +253,7 @@ class AdminUsersController extends AdminController
             'email' => $email,
             'first_name' => $firstName,
             'last_name' => $lastName,
+            'tagline' => $tagline,
             'bio' => $bio,
             'website' => $website,
             'twitter' => $twitter,

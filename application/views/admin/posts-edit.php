@@ -18,6 +18,7 @@
                     </svg>
                     <span class="breadcrumb-current">Edit Post</span>
                 </div>
+                <a href="{{ Url::link('admin/posts/new') }}" class="breadcrumb-link">+ Add New</a>
             </div>
 
             @if(Session::hasFlash('success'))
@@ -50,14 +51,15 @@
                         <span class="permalink-url">{{ Url::base() }}</span>
                         @if($post['status'] === 'published')
                             <a href="{{ Url::link($post['slug']) }}" target="_blank" class="permalink-link" style="color: #3b82f6; text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem;">
-                                {{ $post['slug'] }}
+                                <span class="permalink-display">{{ $post['slug'] }}</span>
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;">
                                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                                     <polyline points="15 3 21 3 21 9"></polyline>
                                     <line x1="10" y1="14" x2="21" y2="3"></line>
                                 </svg>
                             </a>
-                            <input type="hidden" name="slug" value="{{ $post['slug'] }}">
+                            <input type="text" name="slug" class="permalink-input" value="{{ $post['slug'] }}" style="display: none;">
+                            <button type="button" class="permalink-toggle-btn" style="margin-left: auto; font-size: 13px; color: #6b7280; text-decoration: underline; background: none; border: none; cursor: pointer; padding: 0;">Edit</button>
                         @else
                             <input type="text" name="slug" class="permalink-input" placeholder="auto-generated-from-title" value="{{ $post['slug'] }}">
                         @endif
@@ -140,7 +142,7 @@
                             </div>
                         </div>
                         <div class="panel-footer">
-                            <button type="submit" class="btn btn-secondary btn-block">
+                            <button type="submit" class="btn btn-secondary btn-block" id="submit-draft">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                                     <polyline points="17 21 17 13 7 13 7 21"></polyline>
@@ -148,12 +150,12 @@
                                 </svg>
                                 Save Draft
                             </button>
-                            <button type="submit" class="btn btn-primary btn-block">
+                            <button type="submit" class="btn btn-primary btn-block" id="submit-publish">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                 </svg>
-                                Update
+                                Publish
                             </button>
                         </div>
                     </div>
@@ -248,13 +250,15 @@
                     container: [
                         [{ 'header': [1, 2, 3, false] }],
                         ['bold', 'italic', 'underline', 'strike'],
-                        ['link', 'image'],
+                        ['blockquote', 'code-block'],
+                        ['link', 'image', 'video'],
                         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                         [{ 'align': [] }],
                         ['clean']
                     ],
                     handlers: {
-                        image: imageHandler
+                        image: imageHandler,
+                        video: videoHandler
                     }
                 }
             }
@@ -274,6 +278,77 @@
                 quill.setSelection(range.index + 1);
             });
             picker.open();
+        }
+
+        // Custom video handler - shows inline input for URL
+        function videoHandler() {
+            const range = quill.getSelection(true);
+
+            // Create inline input overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                z-index: 1000;
+                min-width: 400px;
+            `;
+
+            overlay.innerHTML = `
+                <div style="margin-bottom: 12px; font-weight: 600; color: #1f2937;">Insert Video</div>
+                <input type="text" id="video-url-input" placeholder="Paste YouTube or Vimeo URL..."
+                    style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px; margin-bottom: 12px;">
+                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                    <button id="video-cancel-btn" style="padding: 8px 16px; border: 1px solid #d1d5db; background: white; border-radius: 4px; cursor: pointer; font-size: 14px;">Cancel</button>
+                    <button id="video-insert-btn" style="padding: 8px 16px; background: #4f46e5; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">Insert</button>
+                </div>
+            `;
+
+            document.body.appendChild(overlay);
+            const input = document.getElementById('video-url-input');
+            input.focus();
+
+            // Handle insert
+            function insertVideo() {
+                const url = input.value.trim();
+                if (!url) return;
+
+                // Convert to embed URL
+                let embedUrl = url;
+
+                // YouTube
+                if (url.match(/youtube\.com\/watch\?v=|youtu\.be\//)) {
+                    const videoId = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?]+)/)[1];
+                    embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                }
+                // Vimeo
+                else if (url.match(/vimeo\.com\/(\d+)/)) {
+                    const videoId = url.match(/vimeo\.com\/(\d+)/)[1];
+                    embedUrl = `https://player.vimeo.com/video/${videoId}`;
+                }
+
+                // Create wrapper HTML
+                const videoHtml = `<div class="video-wrapper"><iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
+
+                // Insert at cursor position
+                quill.clipboard.dangerouslyPasteHTML(range.index, videoHtml);
+                quill.setSelection(range.index + 1);
+
+                overlay.remove();
+            }
+
+            // Event listeners
+            document.getElementById('video-insert-btn').addEventListener('click', insertVideo);
+            document.getElementById('video-cancel-btn').addEventListener('click', () => overlay.remove());
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') insertVideo();
+                if (e.key === 'Escape') overlay.remove();
+            });
         }
 
         // Featured image handler
@@ -432,6 +507,51 @@
                 toast.style.animation = 'slideOut 0.3s ease-out';
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
+        }
+
+        // Code to auto set draft/publish status based on the button clicked
+        var setDraft = document.getElementById('submit-draft');
+        setDraft.addEventListener('click', function(){
+            document.getElementById('status').value = 'draft';
+        });
+
+        var setPublish = document.getElementById('submit-publish');
+        setPublish.addEventListener('click', function(){
+            document.getElementById('status').value = 'published';
+        });
+
+        // Permalink editing for published posts
+        const permalinkToggleBtn = document.querySelector('.permalink-toggle-btn');
+        const permalinkLink = document.querySelector('.permalink-link');
+        const permalinkDisplay = document.querySelector('.permalink-display');
+        const permalinkInput = document.querySelector('.permalink-wrapper input[name="slug"]');
+
+        if (permalinkToggleBtn) {
+            let isEditing = false;
+
+            permalinkToggleBtn.addEventListener('click', function() {
+                if (!isEditing) {
+                    // Switch to edit mode
+                    permalinkLink.style.display = 'none';
+                    permalinkInput.style.display = 'inline';
+                    permalinkInput.focus();
+                    permalinkInput.select();
+                    this.textContent = 'OK';
+                    this.style.color = '#3b82f6';
+                    isEditing = true;
+                }
+                else {
+                    // Switch back to display mode
+                    const newSlug = permalinkInput.value;
+                    permalinkDisplay.textContent = newSlug;
+                    permalinkLink.href = '{{ Url::base() }}' + newSlug;
+                    permalinkLink.style.display = 'inline';
+                    permalinkInput.style.display = 'none';
+                    this.textContent = 'Edit';
+                    this.style.color = '#6b7280';
+                    isEditing = false;
+                }
+            });
         }
         </script>
 @endsection

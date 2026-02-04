@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ Csrf::token() }}">
-    <title>{{$title}} - Pressli CMS</title>
+    <title>{{ $title }} | {{ $settings['site_title'] }} </title>
+    @isset($settings['site_favicon'])
+        <link rel="icon" type="image/x-icon" href="{{ $settings['site_favicon'] }}">
+    @endisset
     <script>
         window.BASE = "{{ Url::base() }}";
     </script>
@@ -16,7 +19,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <h1 class="logo"><a href="{{Url::base()}}" target="_blank">Pressli</a></h1>
+            <h1 class="logo"><a href="{{Url::base()}}" target="_blank">{{ $settings['site_title'] }}</a></h1>
         </div>
         <!-- Sidebar Nav -->
         @section('sidebar-nav')

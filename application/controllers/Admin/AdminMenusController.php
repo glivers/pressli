@@ -49,7 +49,7 @@ class AdminMenusController extends AdminController
     public function getIndex()
     {
         // Fetch all menus with item counts
-        $menus = Menu::getAll();
+        $menus = Menu::all();
 
         // Get selected menu (first menu or from query param)
         $selectedMenuId = Input::get('menu_id') ?: ($menus[0]['id'] ?? null);
@@ -76,18 +76,23 @@ class AdminMenusController extends AdminController
 
             $themeConfig = ThemeConfig::load($activeTheme);
             $menuLocations = $themeConfig->getMenuLocations();
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
             // If theme doesn't define locations, use empty array
         }
 
-        View::render('admin/menus', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Menus',
             'menus' => $menus,
             'selectedMenuId' => $selectedMenuId,
             'selectedMenu' => $selectedMenu,
             'menuItems' => $menuItems,
-            'menuLocations' => $menuLocations
-        ]);
+            'menuLocations' => $menuLocations,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/menus', $data);
     }
 
     /**
@@ -303,6 +308,7 @@ class AdminMenusController extends AdminController
             ->where('type', 'page')
             ->where('status', 'published')
             ->order('title', 'asc')
+            ->whereNull('deleted_at')
             ->all();
 
         View::json(['pages' => $pages]);
@@ -320,6 +326,7 @@ class AdminMenusController extends AdminController
     {
         $categories = TaxonomyModel::select(['id', 'name', 'slug'])
             ->where('type', 'category')
+            ->whereNull('deleted_at')
             ->order('name', 'asc')
             ->all();
 

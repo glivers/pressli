@@ -52,11 +52,15 @@ class AdminPostsController extends AdminController
         // Get status counts for tabs
         $statusCounts = Post::getStatusCounts('post');
 
-        View::render('admin/posts', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Posts',
             'posts' => $posts,
-            'statusCounts' => $statusCounts
-        ]);
+            'statusCounts' => $statusCounts,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/posts', $data);
     }
 
     /**
@@ -74,11 +78,15 @@ class AdminPostsController extends AdminController
         $categories = Post::getCategories();
         $tags = Post::getTags();
 
-        View::render('admin/posts-new', [
+        // Array of data to send to view
+        $data = [
             'title' => 'New Post',
             'categories' => $categories,
-            'tags' => $tags
-        ]);
+            'tags' => $tags,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/posts-new', $data);
     }
 
     /**
@@ -93,7 +101,7 @@ class AdminPostsController extends AdminController
      * @return void Redirects to /posts on success, back on error
      */
     public function postNew()
-    {
+    {        
         // Verify CSRF token
         if (!Csrf::verify()) {
             Session::flash('error', 'Invalid security token. Please try again.');
@@ -158,13 +166,17 @@ class AdminPostsController extends AdminController
         // Get post's assigned category IDs for pre-selection
         $postCategories = Post::getPostCategories($id);
 
-        View::render('admin/posts-edit', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Edit Post',
             'post' => $post,
             'categories' => $categories,
             'tags' => $tags,
-            'postCategories' => $postCategories
-        ]);
+            'postCategories' => $postCategories,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/posts-edit', $data);
     }
 
     /**

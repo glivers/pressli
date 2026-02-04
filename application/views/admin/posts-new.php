@@ -126,7 +126,7 @@
                             </div>
                         </div>
                         <div class="panel-footer">
-                            <button type="submit" class="btn btn-secondary btn-block">
+                            <button type="submit" class="btn btn-secondary btn-block" id="submit-draft">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                                     <polyline points="17 21 17 13 7 13 7 21"></polyline>
@@ -134,7 +134,7 @@
                                 </svg>
                                 Save Draft
                             </button>
-                            <button type="submit" class="btn btn-primary btn-block">
+                            <button type="submit" class="btn btn-primary btn-block" id="submit-publish">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M22 2L11 13"></path>
                                     <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
@@ -292,6 +292,16 @@
         form.addEventListener('submit', function() {
             const html = quill.root.innerHTML;
             document.getElementById('content-input').value = html;
+        });
+
+        var setDraft = document.getElementById('submit-draft');
+        setDraft.addEventListener('click', function(){
+            document.getElementById('status').value = 'draft';
+        });
+
+        var setPublish = document.getElementById('submit-publish');
+        setPublish.addEventListener('click', function(){
+            document.getElementById('status').value = 'published';
         });
         </script>
 @endsection

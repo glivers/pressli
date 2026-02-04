@@ -1,0 +1,11 @@
+# Robots.txt for Pressli CMS
+
+User-agent: *
+Allow: /
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /vault/
+
+# Sitemap
+Sitemap: http://localhost/pressli/sitemap.xml

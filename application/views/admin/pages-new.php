@@ -63,7 +63,7 @@
                         <label class="form-label">Excerpt</label>
                         <textarea name="excerpt" class="form-textarea" rows="3" placeholder="Write a short excerpt for this page..."></textarea>
                         <p class="form-help">The excerpt is used in search results and social media previews.</p>
-                    </div>
+                    </div> 
 
                     <!-- SEO Settings -->
                     <div class="form-section">
@@ -90,19 +90,10 @@
                         <div class="panel-header">
                             <h3 class="panel-title">Publish</h3>
                         </div>
-                        <div class="panel-body">
-                            <div class="publish-options">
-                                <div class="publish-option">
-                                    <span class="option-label">Status:</span>
-                                    <select name="status" class="option-value" style="border: none; background: transparent; padding: 0; font-size: inherit;">
-                                        <option value="draft" selected>Draft</option>
-                                        <option value="published">Published</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+                        
                         <div class="panel-footer">
-                            <button type="submit" class="btn btn-secondary btn-block">
+                            <input type="hidden" name="status" value="" id="page-status">
+                            <button type="submit" class="btn btn-secondary btn-block" id="submit-draft">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                                     <polyline points="17 21 17 13 7 13 7 21"></polyline>
@@ -110,7 +101,7 @@
                                 </svg>
                                 Save Draft
                             </button>
-                            <button type="submit" class="btn btn-primary btn-block">
+                            <button type="submit" class="btn btn-primary btn-block" id="submit-publish">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M22 2L11 13"></path>
                                     <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
@@ -141,9 +132,11 @@
                             <div class="form-group">
                                 <label class="form-label" for="template">Template</label>
                                 <select name="template" id="template" class="form-select">
-                                    <option value="default" selected>Default</option>
-                                    <option value="full-width">Full Width</option>
-                                    <option value="landing">Landing Page</option>
+                                    @foreach($pageTemplates as $slug => $config)
+                                        <option value="{{ $slug }}" {{ $slug === 'default' ? 'selected' : '' }}>
+                                            {{ $config['label'] }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -264,6 +257,16 @@
         form.addEventListener('submit', function() {
             const html = quill.root.innerHTML;
             document.getElementById('content-input').value = html;
+        });
+
+        var setDraft = document.getElementById('submit-draft');
+        setDraft.addEventListener('click', function(){
+            document.getElementById('page-status').value = 'draft';
+        });
+
+        var setPublish = document.getElementById('submit-publish');
+        setPublish.addEventListener('click', function(){
+            document.getElementById('page-status').value = 'published';
         });
         </script>
 @endsection

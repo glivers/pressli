@@ -45,3 +45,17 @@
     font-style: italic;
     color: #aaa;
 }
+
+/* Responsive video embeds */
+.ql-editor .video-wrapper {
+    position: relative;
+    width: 100%;
+    margin: 1.5em 0;
+}
+
+.ql-editor .video-wrapper iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    border: none;
+}

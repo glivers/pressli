@@ -7,6 +7,7 @@ use Rackage\Session;
 use Rackage\Request;
 use Rackage\Redirect;
 use Lib\Services\Page;
+use Lib\ThemeConfig;
 use Controllers\Admin\AdminController;
 use Lib\Exceptions\ServiceException;
 
@@ -51,17 +52,21 @@ class AdminPagesController extends AdminController
         // Get status counts for tabs
         $statusCounts = Page::getStatusCounts();
 
-        View::render('admin/pages', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Pages',
             'pages' => $pages,
-            'statusCounts' => $statusCounts
-        ]);
+            'statusCounts' => $statusCounts,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/pages', $data);
     }
 
     /**
      * Display form to create new page
      *
-     * Loads all pages for parent selection dropdown.
+     * Loads all pages for parent selection dropdown and page templates from active theme.
      *
      * @return void
      */
@@ -73,10 +78,19 @@ class AdminPagesController extends AdminController
         // Build hierarchical list with » prefix
         $hierarchicalPages = Page::buildHierarchy($pages);
 
-        View::render('admin/pages-new', [
+        // Load page templates from active theme
+        $themeConfig = ThemeConfig::load($this->settings['active_theme']);
+        $pageTemplates = $themeConfig->getPageTemplates();
+
+        // Array of data to send to view
+        $data = [
             'title' => 'New Page',
-            'pages' => $hierarchicalPages
-        ]);
+            'pages' => $hierarchicalPages,
+            'pageTemplates' => $pageTemplates,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/pages-new', $data);
     }
 
     /**
@@ -128,7 +142,7 @@ class AdminPagesController extends AdminController
     /**
      * Display form to edit page
      *
-     * Loads page data and all other pages for parent selection.
+     * Loads page data, all other pages for parent selection, and page templates from active theme.
      * Returns 404 if page not found or already deleted.
      *
      * @param int $id Page ID from URL
@@ -150,11 +164,20 @@ class AdminPagesController extends AdminController
         // Build hierarchical list with » prefix
         $hierarchicalPages = Page::buildHierarchy($pages);
 
-        View::render('admin/pages-edit', [
+        // Load page templates from active theme
+        $themeConfig = ThemeConfig::load($this->settings['active_theme']);
+        $pageTemplates = $themeConfig->getPageTemplates();
+
+        // Array of data to send to view
+        $data = [
             'title' => 'Edit Page',
             'page' => $page,
-            'pages' => $hierarchicalPages
-        ]);
+            'pages' => $hierarchicalPages,
+            'pageTemplates' => $pageTemplates,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/pages-edit', $data);
     }
 
     /**

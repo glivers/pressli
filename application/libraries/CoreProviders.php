@@ -116,7 +116,8 @@ class CoreProviders
                     'id', 'title', 'slug', 'excerpt',
                     'featured_image_id', 'published_at'
                 ])
-                ->innerJoin('post_taxonomies', 'posts.id = post_id', [])
+                ->innerJoin('post_taxonomies', 'id = post_id', [])
+                ->leftJoin('media', 'featured_image_id = id', ['file_path as featured_image', 'alt_text as featured_image_alt', 'title as featured_image_title'])
                 ->where('type', 'post')
                 ->where('status', 'published')
                 ->where('id != ?', $post['id'])
@@ -136,6 +137,7 @@ class CoreProviders
             $query = PostModel::select([
                     'id', 'title', 'slug', 'excerpt', 'featured_image_id', 'published_at'
                 ])
+                ->leftJoin('media', 'featured_image_id = id', ['file_path as featured_image', 'alt_text as featured_image_alt', 'title as featured_image_title'])
                 ->where('type', 'post')
                 ->where('status', 'published')
                 ->whereNull('deleted_at')
@@ -161,6 +163,7 @@ class CoreProviders
                 ->where('type', 'post')
                 ->where('status', 'published')
                 ->whereNull('deleted_at')
+                ->leftJoin('media', 'featured_image_id = id', ['file_path as featured_image', 'alt_text as featured_image_alt', 'title as featured_image_title'])
                 ->order('view_count', 'desc')
                 ->limit($limit);
 
@@ -168,7 +171,7 @@ class CoreProviders
                 $query->where('id != ?', $excludeCurrentId);
             }
 
-            return $query->all();
+            return $query->all(); 
         });
 
         // Featured posts - manually marked as featured
@@ -176,10 +179,11 @@ class CoreProviders
             $limit = $options['limit'] ?? 3;
 
             return PostModel::select([
-                    'posts.id', 'posts.title', 'posts.slug', 'posts.excerpt',
-                    'posts.featured_image_id', 'posts.published_at'
+                    'id', 'title', 'slug', 'excerpt','featured_image_id', 'published_at', 'content'
                 ])
-                ->innerJoin('post_meta', 'posts.id = post_id', [])
+                ->innerJoin('post_meta', 'id = post_id', [])
+                ->leftJoin('media', 'featured_image_id = id', ['file_path as featured_image', 'alt_text as featured_image_alt', 'title as featured_image_title'])
+                ->leftJoin('users', 'author_id = id', ['first_name', 'last_name'])
                 ->where('posts.type', 'post')
                 ->where('posts.status', 'published')
                 ->whereNull('posts.deleted_at')

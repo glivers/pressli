@@ -106,42 +106,60 @@ class ThemeConfig
      *
      * Returns array of provider names that template requires.
      * Providers listed in theme.json under templates.{type}.data_providers.
-     * Returns empty array if template type not configured.
+     * For pages, variant parameter is REQUIRED (default, full-width, landing, etc.).
      *
      * EXAMPLES:
      * - getProviders('post') → ['post_categories', 'recent_posts', 'popular_posts']
-     * - getProviders('page') → ['recent_posts', 'categories']
-     * - getProviders('unknown') → []
+     * - getProviders('page', 'default') → ['recent_posts', 'categories']
+     * - getProviders('page', 'landing') → ['site_menus']
      *
      * @param string $templateType Template type (post, page, archive, etc.)
+     * @param string $variant Template variant - REQUIRED for pages
      * @return array Array of provider names (strings)
      */
-    public function getProviders($templateType)
+    public function getProviders($templateType, $variant = null)
     {
         if (!isset($this->config['templates'][$templateType])) {
             return [];
         }
 
-        return $this->config['templates'][$templateType]['data_providers'] ?? [];
+        $template = $this->config['templates'][$templateType];
+
+        // For pages, variant is REQUIRED
+        if ($templateType === 'page') {
+            return $template[$variant]['data_providers'];
+        }
+
+        // For other types (post, archive, 404, home) - direct access
+        return $template['data_providers'] ?? [];
     }
 
     /**
      * Get template file path for specific type
      *
      * Returns template filename from theme.json configuration.
-     * Path is relative to theme directory (e.g., 'single.html', 'templates/post.php').
-     * Returns null if template type not configured.
+     * Path is relative to theme directory (e.g., 'templates/page.php', 'templates/page-full-width.php').
+     * For pages, variant parameter is REQUIRED (default, full-width, landing, etc.).
      *
      * @param string $templateType Template type (post, page, archive, etc.)
-     * @return string|null Template path or null if not found
+     * @param string $variant Template variant - REQUIRED for pages
+     * @return string Template path
      */
-    public function getTemplate($templateType)
+    public function getTemplate($templateType, $variant = null)
     {
         if (!isset($this->config['templates'][$templateType])) {
             return null;
         }
 
-        return $this->config['templates'][$templateType]['template'] ?? null;
+        $template = $this->config['templates'][$templateType];
+
+        // For pages, variant is REQUIRED
+        if ($templateType === 'page') {
+            return $template[$variant]['template'];
+        }
+
+        // For other types (post, archive, 404, home) - direct access
+        return $template['template'] ?? null;
     }
 
     /**
@@ -232,6 +250,20 @@ class ThemeConfig
     public function getPath()
     {
         return $this->themePath;
+    }
+
+    /**
+     * Get page templates defined by theme
+     *
+     * Returns associative array of page template slugs to their configuration.
+     * Each template includes label, template path, and data providers.
+     * Example: ['default' => ['label' => 'Default', 'template' => '...', 'data_providers' => [...]]]
+     *
+     * @return array Page templates configuration
+     */
+    public function getPageTemplates()
+    {
+        return $this->config['templates']['page'] ?? [];
     }
 
     /**

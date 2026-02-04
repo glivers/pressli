@@ -23,7 +23,9 @@
             <form method="POST" action="{{ Url::link('admin/settings/update') }}">
                 {{{ Csrf::field() }}}
 
-                <div class="settings-container">
+            <div class="settings-container">
+            <!-- Divide into two columns grid -->
+            <div class="settings-grid">
                 <!-- General Settings -->
                 <div class="card">
                     <div class="card-header">
@@ -134,6 +136,19 @@
                                     </option>
                                 @endforeach
                             </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="posts-page-id">Posts page (blog archive)</label>
+                            <select id="posts-page-id" name="posts-page-id" class="select-input">
+                                <option value="">— Select —</option>
+                                @foreach($pages as $page)
+                                    <option value="{{ $page['id'] }}" {{ ($settings['posts_page_id'] ?? '') == $page['id'] ? 'selected' : '' }}>
+                                        {{ $page['title'] }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="form-help">The page that displays your blog posts archive (e.g., /blog)</p>
                         </div>
 
                         <div class="form-row">
@@ -334,8 +349,24 @@
                     </div>
                 </div>
             </div>
+            </div>
             </form>
         </main>
+
+<style>
+.settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+@media (max-width: 968px) {
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
 @endsection
 
 @section('scripts')

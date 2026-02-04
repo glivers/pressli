@@ -28,6 +28,7 @@
         initDragAndDrop();
         initSaveMenu();
         initLocationSelector();
+        initEditableTitles();
         loadPages();
         loadCategories();
 
@@ -269,6 +270,40 @@
     }
 
     /**
+     * Make existing menu item titles editable
+     */
+    function initEditableTitles() {
+        document.querySelectorAll('.menu-item-card').forEach(itemCard => {
+            const titleEl = itemCard.querySelector('.menu-item-title');
+            if (!titleEl) return;
+
+            // Make contenteditable
+            titleEl.setAttribute('contenteditable', 'true');
+            titleEl.setAttribute('spellcheck', 'false');
+
+            // Update dataset on blur
+            titleEl.addEventListener('blur', function() {
+                const newTitle = this.textContent.trim();
+                if (newTitle) {
+                    itemCard.dataset.title = newTitle;
+                }
+                else {
+                    // Restore original if empty
+                    this.textContent = itemCard.dataset.title;
+                }
+            });
+
+            // Submit on Enter key
+            titleEl.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.blur();
+                }
+            });
+        });
+    }
+
+    /**
      * Add Menu Items Functionality
      */
     function initAddItemHandlers() {
@@ -366,7 +401,7 @@
                 </svg>
             </div>
             <div class="menu-item-content">
-                <div class="menu-item-title">${title}</div>
+                <div class="menu-item-title" contenteditable="true" spellcheck="false">${title}</div>
                 <div class="menu-item-url">${url}</div>
             </div>
             <button class="menu-item-delete">
@@ -378,6 +413,26 @@
         `;
 
         itemsList.appendChild(itemCard);
+
+        // Make title editable and sync with dataset
+        const titleEl = itemCard.querySelector('.menu-item-title');
+        titleEl.addEventListener('blur', function() {
+            const newTitle = this.textContent.trim();
+            if (newTitle) {
+                itemCard.dataset.title = newTitle;
+            }
+            else {
+                // Restore original if empty
+                this.textContent = itemCard.dataset.title;
+            }
+        });
+
+        titleEl.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.blur();
+            }
+        });
 
         // Attach delete handler to new item
         itemCard.querySelector('.menu-item-delete').addEventListener('click', function(e) {

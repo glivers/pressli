@@ -45,11 +45,15 @@ class AdminTagsController extends AdminController
         $tags = Taxonomy::getAll('tag');
         $totalCount = Taxonomy::count('tag');
 
-        View::render('admin/tags', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Tags',
             'tags' => $tags,
-            'totalCount' => $totalCount
-        ]);
+            'totalCount' => $totalCount,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/tags', $data);
     }
 
     /**
@@ -59,9 +63,13 @@ class AdminTagsController extends AdminController
      */
     public function getNew()
     {
-        View::render('admin/tags-new', [
-            'title' => 'New Tag'
-        ]);
+        // Array of data to send to view
+        $data = [
+            'title' => 'New Tag',
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/tags-new', $data);
     }
 
     /**
@@ -120,10 +128,14 @@ class AdminTagsController extends AdminController
             Redirect::to('admin/tags');
         }
 
-        View::render('admin/tags-edit', [
+        // Array of data to send to view
+        $data = [
             'title' => 'Edit Tag',
-            'tag' => $tag
-        ]);
+            'tag' => $tag,
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/tags-edit', $data);
     }
 
     /**

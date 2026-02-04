@@ -60,6 +60,7 @@ use Rackage\Redirect;
 use Lib\ThemeConfig;
 use Models\PostModel;
 use Lib\CoreProviders;
+use Lib\PluginManager;
 use Rackage\Controller;
 use Models\SettingModel;
 use Models\CommentModel;
@@ -105,17 +106,19 @@ class PageController extends Controller
     protected $customCSS;
 
     /**
-     * Constructor - load settings, register providers, load theme config
+     * Constructor - load settings, register providers, load plugins, load theme config
      *
      * Execution order:
      * 0. Check if CMS is installed (redirect to /install if not)
      * 1. Load autoload settings from database (single query)
      * 2. Get active theme name from settings
      * 3. Load theme configuration from theme.json
-     * 4. Register core data providers
+     * 4. Load custom CSS from theme customizer
+     * 5. Register core data providers
+     * 6. Load all active plugins (registers content types and routes)
      *
      * Called once per request before any controller methods execute.
-     * Providers and theme config become available to all methods.
+     * Providers, plugins, and theme config become available to all methods.
      *
      * @return void
      */
@@ -132,7 +135,7 @@ class PageController extends Controller
         $this->siteSettings = SettingModel::getAutoload();
 
         // STEP 2: Get active theme from settings (fallback to 'aurora')
-        $activeTheme = $this->siteSettings['active_theme'] ?? 'aurora';
+        $activeTheme = $this->siteSettings['active_theme'];
 
         // STEP 3: Load theme configuration
         $this->themeConfig = ThemeConfig::load($activeTheme);
@@ -143,6 +146,9 @@ class PageController extends Controller
 
         // STEP 5: Register all core providers (recent_posts, popular_posts, categories, etc.)
         CoreProviders::register();
+
+        // STEP 6: Load all active plugins (registers content types and routes)
+        PluginManager::load();
     }
     /**
      * Display homepage
@@ -292,16 +298,16 @@ class PageController extends Controller
             // Render with plugin data
             $data['customCSS'] = $this->customCSS;
             View::render($template, $data);
-            return;
-        }
+            return; 
+        } 
 
         // STEP 3: Fetch content (unified query for all types)
         $content = PostModel::select([
                 'id', 'title', 'slug', 'content', 'excerpt', 'featured_image_id',
-                'published_at', 'updated_at', 'view_count', 'type'
+                'published_at', 'updated_at', 'view_count', 'type', 'template'
             ])
-            ->leftJoin('users', 'author_id = id', ['first_name', 'last_name', 'email', 'avatar'])
-            ->leftJoin('media', 'featured_image_id = media.id', ['file_path as featured_image', 'alt_text as featured_image_alt', 'title as featured_image_title'])
+            ->leftJoin('users', 'author_id = id', ['first_name', 'last_name', 'email', 'avatar', 'bio', 'tagline'])
+            ->leftJoin('media', 'featured_image_id = id', ['file_path as featured_image', 'alt_text as featured_image_alt', 'title as featured_image_title'])
             ->where('slug', $slug)
             ->where('status', 'published')
             ->whereNull('deleted_at')
@@ -310,6 +316,13 @@ class PageController extends Controller
         // Content not found - show 404
         if (!$content) {
             $this->show404();
+            return;
+        }
+
+        // Check if this page is designated as the posts archive page
+        $postsPageId = $this->siteSettings['posts_page_id'] ?? null;
+        if ($postsPageId && $content['id'] == $postsPageId) {
+            $this->renderArchive();
             return;
         }
 
@@ -363,6 +376,9 @@ class PageController extends Controller
                 'author_name' => trim(($content['first_name'] ?? '') . ' ' . ($content['last_name'] ?? '')),
                 'author_email' => $content['email'] ?? null,
                 'author_avatar' => $content['avatar'] ?? null,
+                'author_bio' => $content['bio'] ?? null,
+                'author_tagline' => $content['tagline'] ?? null,
+                'author_title' => $content['title'] ?? null,
             ],
             'site' => [
                 'name' => $this->siteSettings['site_title'] ?? 'Pressli',
@@ -409,7 +425,7 @@ class PageController extends Controller
         $context = ['page' => $content];
 
         // Get provider requirements from theme.json
-        $providers = $this->themeConfig->getProviders('page');
+        $providers = $this->themeConfig->getProviders('page', $content['template']);
 
         $providerData = ProviderRegistry::getBatch($providers, $context);
 
@@ -448,7 +464,7 @@ class PageController extends Controller
 
         // Get theme name and template from config
         $themeName = $this->themeConfig->getName();
-        $template = $this->themeConfig->getTemplate('page');
+        $template = $this->themeConfig->getTemplate('page', $content['template']);
         $template = str_replace('.php', '', $template);
 
         // Add custom CSS to data
@@ -488,7 +504,7 @@ class PageController extends Controller
     {
         $content = PostModel::select([
                 'id', 'title', 'slug', 'content', 'excerpt', 'featured_image_id',
-                'published_at', 'updated_at', 'view_count', 'type'
+                'published_at', 'updated_at', 'view_count', 'type', 'template'
             ])
             ->leftJoin('users', 'author_id = id', ['first_name', 'last_name', 'email', 'avatar'])
             ->leftJoin('media', 'featured_image_id = media.id', ['file_path as featured_image', 'alt_text as featured_image_alt', 'title as featured_image_title'])
@@ -505,7 +521,7 @@ class PageController extends Controller
 
         // Fetch data via providers
         $context = ['page' => $content];
-        $providers = $this->themeConfig->getProviders('page');
+        $providers = $this->themeConfig->getProviders('page', $content['template']);
         $providerData = ProviderRegistry::getBatch($providers, $context);
 
         $data = [
@@ -540,7 +556,7 @@ class PageController extends Controller
         $data = array_merge($data, $providerData);
 
         $themeName = $this->themeConfig->getName();
-        $template = $this->themeConfig->getTemplate('page');
+        $template = $this->themeConfig->getTemplate('page', $content['template']);
         $template = str_replace('.php', '', $template);
 
         // Add custom CSS to data
@@ -566,10 +582,10 @@ class PageController extends Controller
 
         // Build query
         $query = PostModel::select([
-                'id', 'title', 'slug', 'excerpt', 'featured_image_id', 'published_at'
+                'id', 'title', 'slug', 'excerpt', 'featured_image_id', 'published_at', 'content'
             ])
             ->leftJoin('users', 'author_id = id', ['first_name', 'last_name'])
-            ->leftJoin('media', 'featured_image_id = media.id', ['file_path as featured_image', 'alt_text as featured_image_alt', 'title as featured_image_title'])
+            ->leftJoin('media', 'featured_image_id = id', ['file_path as featured_image', 'alt_text as featured_image_alt', 'title as featured_image_title'])
             ->where('posts.type', 'post')
             ->where('posts.status', 'published')
             ->whereNull('posts.deleted_at')
@@ -599,7 +615,8 @@ class PageController extends Controller
 
         if($categorySlug !== null || $tagSlug !== null){
             if(count($result['data']) > 0){
-               $taxonomy = $result['data'][0]['taxonomy_name'];
+               $taxonomy['name'] = $result['data'][0]['taxonomy_name'];
+               $taxonomy['slug'] = $categorySlug || $tagSlug;
             }
         }
 
