@@ -140,6 +140,14 @@ class PageController extends Controller
         // STEP 3: Load theme configuration
         $this->themeConfig = ThemeConfig::load($activeTheme);
 
+        // STEP 3.5: Prepend active theme to view paths (case-sensitive, works on Linux)
+        // This allows theme templates to use relative paths like @extends('templates/layout')
+        // instead of @extends('ThemeName/templates/layout'), making themes portable.
+        // Prepends (not replaces) to preserve plugin/module view paths from config.
+        $existingViewPaths = $settings['view_paths'] ?? [];
+        $settings['view_paths'] = array_merge(['themes/' . $activeTheme], $existingViewPaths);
+        Registry::setSettings($settings);
+
         // STEP 4: Load custom CSS from file (NULL if user hasn't customized yet)
         $cssPath = Path::vault() . 'tmp' . DIRECTORY_SEPARATOR . 'theme-custom.css';
         $this->customCSS = file_exists($cssPath) ? file_get_contents($cssPath) : null;
