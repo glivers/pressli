@@ -11,7 +11,8 @@
     RewriteCond %{REQUEST_FILENAME} !-f
 
     # Route everything else through index.php
-    RewriteRule ^(.*)$ index.php?_rachie_route=$1 [QSA,L]
+    # [B] flag: Escape backreferences (handles spaces and special chars in URL segments)
+    RewriteRule ^(.*)$ index.php?_rachie_route=$1 [B,QSA,L]
 </IfModule>
 
 # Prevent directory listing
