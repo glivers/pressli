@@ -235,8 +235,8 @@ class AdminThemesController extends AdminController
             // Delete theme directory
             File::deleteDir($themeDir);
 
-            // Delete public assets directory
-            $publicThemeDir = Path::base() . 'public' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $themeRoot;
+            // Delete public assets directory (lowercase for web portability)
+            $publicThemeDir = Path::base() . 'public' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . strtolower($themeRoot);
             if (is_dir($publicThemeDir)) {
                 File::deleteDir($publicThemeDir);
             }
@@ -330,7 +330,8 @@ class AdminThemesController extends AdminController
             if (isset($json['screenshot'])) {
                 $screenshotPath = $assetsPath . DIRECTORY_SEPARATOR . $json['screenshot'];
                 if (file_exists($screenshotPath)) {
-                    return '/themes/' . $themeName . '/assets/' . $json['screenshot'];
+                    // Public assets copied directly to public/themes/{lowercase}/ without assets subdirectory
+                    return '/themes/' . strtolower($themeName) . '/' . $json['screenshot'];
                 }
             }
         } 
@@ -343,7 +344,8 @@ class AdminThemesController extends AdminController
         foreach ($extensions as $ext) {
             $screenshotPath = $assetsPath . DIRECTORY_SEPARATOR . 'screenshot.' . $ext;
             if (file_exists($screenshotPath)) {
-                return '/themes/' . $themeName . '/assets/screenshot.' . $ext;
+                // Public assets copied directly to public/themes/{lowercase}/ without assets subdirectory
+                return '/themes/' . strtolower($themeName) . '/screenshot.' . $ext;
             }
         }
 
@@ -838,15 +840,16 @@ class AdminThemesController extends AdminController
             }
 
             // Create theme directories
-            $publicThemeDir = Path::base() . 'public' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $root;
+            // Public assets use lowercase for web portability (case-sensitive Linux Apache)
+            $publicThemeDir = Path::base() . 'public' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . strtolower($root);
             File::makeDir($themeDir);
             File::makeDir($publicThemeDir);
 
             // Copy ALL theme files to themes/{root}/
             File::copyDir($tempDir, $themeDir);
 
-            // Copy assets CONTENTS directly to public/themes/{root}/
-            // Result: themes/Bota/assets/css/ → public/themes/Bota/css/ (not /assets/css/)
+            // Copy assets CONTENTS directly to public/themes/{lowercase-root}/
+            // Result: themes/Bota/assets/css/ → public/themes/bota/css/ (lowercase for web URLs)
             $sourceAssetsDir = $tempDir . DIRECTORY_SEPARATOR . 'assets';
             if (is_dir($sourceAssetsDir)) {
                 File::copyDir($sourceAssetsDir, $publicThemeDir);
@@ -997,8 +1000,8 @@ class AdminThemesController extends AdminController
             $backupPath = $backupDir . DIRECTORY_SEPARATOR . $themeRoot . '-' . date('Y-m-d-His');
             File::copyDir($themeDir, $backupPath);
 
-            // Also backup public assets
-            $publicThemeDir = Path::base() . 'public' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $themeRoot;
+            // Also backup public assets (lowercase directory for web portability)
+            $publicThemeDir = Path::base() . 'public' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . strtolower($themeRoot);
             if (is_dir($publicThemeDir)) {
                 $publicBackupPath = $backupPath . '-public';
                 File::copyDir($publicThemeDir, $publicBackupPath);
@@ -1025,7 +1028,8 @@ class AdminThemesController extends AdminController
             }
             File::makeDir($publicThemeDir);
 
-            // Copy assets CONTENTS directly to public/themes/{root}/
+            // Copy assets CONTENTS directly to public/themes/{lowercase-root}/
+            // Result: themes/Aurora/assets/css/ → public/themes/aurora/css/ (lowercase for web URLs)
             $sourceAssetsDir = $tempDir . DIRECTORY_SEPARATOR . 'assets';
             if (is_dir($sourceAssetsDir)) {
                 File::copyDir($sourceAssetsDir, $publicThemeDir);
