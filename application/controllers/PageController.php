@@ -530,6 +530,7 @@ class PageController extends Controller
                 'title' => $content['title'],
                 'slug' => $content['slug'],
                 'content' => $content['content'],
+                'excerpt' => $content['excerpt'] ?? null,
                 'featured_image' => $content['featured_image'] ?? null,
                 'featured_image_alt' => $content['featured_image_alt'] ?? null,
                 'featured_image_title' => $content['featured_image_title'] ?? null,
