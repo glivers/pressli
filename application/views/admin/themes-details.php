@@ -153,6 +153,26 @@
                                         Report Issue
                                     </a>
                                 </div>
+
+                                <!-- Update Theme Section -->
+                                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+                                    <h3 style="font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 12px;">Update Theme</h3>
+
+                                    <div id="updateStatus" class="alert" style="display: none; margin-bottom: 12px;"></div>
+
+                                    <div id="updateArea" style="border: 2px dashed #d1d5db; border-radius: 8px; padding: 20px; text-align: center; background: #f9fafb; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#6366f1'; this.style.background='#eef2ff'" onmouseout="this.style.borderColor='#d1d5db'; this.style.background='#f9fafb'">
+                                        <svg style="width: 32px; height: 32px; margin: 0 auto 8px; color: #6b7280;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="17 8 12 3 7 8"></polyline>
+                                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        </svg>
+                                        <p id="updateText" style="color: #6b7280; font-size: 13px; margin: 0;">Drop new version ZIP or <span style="color: #6366f1; cursor: pointer;" id="updateBrowse">browse</span></p>
+                                        <p id="updateHelp" style="color: #9ca3af; font-size: 12px; margin: 4px 0 0 0;">Maximum file size: 10 MB</p>
+                                        <input type="file" id="updateFile" accept=".zip" style="display: none;">
+                                    </div>
+
+                                    <button id="updateBtn" class="btn btn-primary" style="width: 100%; margin-top: 12px; display: none;">Update Now</button>
+                                </div>
                             </div>
                         </div>
 
@@ -279,5 +299,133 @@
                 showSlide(currentSlide);
             });
         });
+
+        // Theme Update functionality
+        const updateArea = document.getElementById('updateArea');
+        const updateFile = document.getElementById('updateFile');
+        const updateBrowse = document.getElementById('updateBrowse');
+        const updateBtn = document.getElementById('updateBtn');
+        const updateStatus = document.getElementById('updateStatus');
+        const updateText = document.getElementById('updateText');
+        const updateHelp = document.getElementById('updateHelp');
+
+        // Browse link click
+        updateBrowse.addEventListener('click', (e) => {
+            e.stopPropagation();
+            updateFile.click();
+        });
+
+        // Area click to open file picker
+        updateArea.addEventListener('click', () => {
+            updateFile.click();
+        });
+
+        // File input change
+        updateFile.addEventListener('change', () => {
+            if (updateFile.files[0]) {
+                updateUploadUI(updateFile.files[0]);
+                updateBtn.style.display = 'block';
+            }
+        });
+
+        // Drag and drop
+        updateArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            updateArea.style.borderColor = '#6366f1';
+            updateArea.style.background = '#eef2ff';
+        });
+
+        updateArea.addEventListener('dragleave', () => {
+            updateArea.style.borderColor = '#d1d5db';
+            updateArea.style.background = '#f9fafb';
+        });
+
+        updateArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            updateArea.style.borderColor = '#d1d5db';
+            updateArea.style.background = '#f9fafb';
+
+            if (e.dataTransfer.files.length > 0) {
+                updateFile.files = e.dataTransfer.files;
+                updateUploadUI(e.dataTransfer.files[0]);
+                updateBtn.style.display = 'block';
+            }
+        });
+
+        // Update UI with selected file
+        function updateUploadUI(file) {
+            updateText.innerHTML = `<strong>${file.name}</strong> selected`;
+            updateHelp.textContent = `Size: ${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+        }
+
+        // Update button click
+        updateBtn.addEventListener('click', async () => {
+            if (!updateFile.files[0]) {
+                showUpdateStatus('error', 'Please select a theme file to upload');
+                return;
+            }
+
+            const file = updateFile.files[0];
+
+            // Validate file type
+            if (!file.name.endsWith('.zip')) {
+                showUpdateStatus('error', 'Please upload a ZIP file');
+                return;
+            }
+
+            // Validate file size (10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                showUpdateStatus('error', 'File size exceeds 10MB limit');
+                return;
+            }
+
+            // Confirmation dialog
+            if (!confirm('This will update your active theme. Your site will reload after update. Continue?')) {
+                return;
+            }
+
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('theme_file', file);
+            formData.append('csrf_token', '{{ Csrf::token() }}');
+
+            // Disable button and show loading
+            updateBtn.disabled = true;
+            updateBtn.textContent = 'Updating...';
+            showUpdateStatus('info', 'Uploading and updating theme...');
+
+            try {
+                const response = await fetch('{{ Url::link("admin/themes/update", $theme["name"]) }}', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showUpdateStatus('success', result.message);
+                    // Reload page after 2 seconds to show new version
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                }
+                else {
+                    showUpdateStatus('error', result.message || 'Theme update failed');
+                    updateBtn.disabled = false;
+                    updateBtn.textContent = 'Update Now';
+                }
+            }
+            catch (error) {
+                showUpdateStatus('error', 'Failed to update theme. Please try again.');
+                updateBtn.disabled = false;
+                updateBtn.textContent = 'Update Now';
+            }
+        });
+
+        function showUpdateStatus(type, message) {
+            updateStatus.style.display = 'block';
+            updateStatus.className = 'alert alert-' + type;
+            updateStatus.textContent = message;
+        }
     </script>
 @endsection

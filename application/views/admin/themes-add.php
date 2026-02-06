@@ -6,7 +6,7 @@
         <main class="content">
             <div class="content-header">
                 <div class="header-breadcrumb">
-                    <a href="themes.html" class="breadcrumb-link">Themes</a>
+                    <a href="{{ Url::link('admin/themes') }}" class="breadcrumb-link">Themes</a>
                     <svg class="breadcrumb-separator" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="9 18 15 12 9 6"></polyline>
                     </svg>
@@ -21,18 +21,21 @@
                 </div>
                 <div class="card-body">
                     <p class="text-secondary" style="margin-bottom: 16px;">If you have a theme in a .zip format, you can install it by uploading it here.</p>
-                    <div class="upload-area">
+
+                    <div id="uploadStatus" class="alert" style="display: none; margin-bottom: 16px;"></div>
+
+                    <div class="upload-area" id="uploadArea">
                         <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="17 8 12 3 7 8"></polyline>
                             <line x1="12" y1="3" x2="12" y2="15"></line>
                         </svg>
-                        <p class="upload-text">Drop theme .zip file here or <span class="upload-link">browse</span></p>
+                        <p class="upload-text">Drop theme .zip file here or <span class="upload-link" id="browseLink">browse</span></p>
                         <p class="upload-help">Maximum file size: 50 MB</p>
-                        <input type="file" class="upload-input" accept=".zip">
+                        <input type="file" id="themeFile" class="upload-input" accept=".zip">
                     </div>
                     <div class="form-actions">
-                        <button class="btn btn-primary">Install Now</button>
+                        <button id="installBtn" class="btn btn-primary">Install Now</button>
                     </div>
                 </div>
             </div>
@@ -213,4 +216,120 @@
                 </div>
             </div>
         </main>
+@endsection
+
+@section('scripts')
+<script>
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('themeFile');
+const browseLink = document.getElementById('browseLink');
+const installBtn = document.getElementById('installBtn');
+const uploadStatus = document.getElementById('uploadStatus');
+
+// Browse link click
+browseLink.addEventListener('click', () => {
+    fileInput.click();
+});
+
+// File input change
+fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) {
+        updateUploadUI(fileInput.files[0]);
+    }
+});
+
+// Drag and drop
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.style.borderColor = '#0066cc';
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.style.borderColor = '';
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.style.borderColor = '';
+
+    if (e.dataTransfer.files.length > 0) {
+        fileInput.files = e.dataTransfer.files;
+        updateUploadUI(e.dataTransfer.files[0]);
+    }
+});
+
+// Update UI with selected file
+function updateUploadUI(file) {
+    const uploadText = uploadArea.querySelector('.upload-text');
+    const uploadHelp = uploadArea.querySelector('.upload-help');
+
+    uploadText.innerHTML = `<strong>${file.name}</strong> selected`;
+    uploadHelp.textContent = `Size: ${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+}
+
+// Install button click
+installBtn.addEventListener('click', async () => {
+    if (!fileInput.files[0]) {
+        showStatus('error', 'Please select a theme file to upload');
+        return;
+    }
+
+    const file = fileInput.files[0];
+
+    // Validate file type
+    if (!file.name.endsWith('.zip')) {
+        showStatus('error', 'Please upload a ZIP file');
+        return;
+    }
+
+    // Validate file size (50MB)
+    if (file.size > 50 * 1024 * 1024) {
+        showStatus('error', 'File size exceeds 50MB limit');
+        return;
+    }
+
+    // Prepare form data
+    const formData = new FormData();
+    formData.append('theme_file', file);
+    formData.append('csrf_token', '{{ Csrf::token() }}');
+
+    // Disable button and show loading
+    installBtn.disabled = true;
+    installBtn.textContent = 'Installing...';
+    showStatus('info', 'Uploading and installing theme...');
+
+    try {
+        const response = await fetch('{{ Url::link("admin/themes/upload") }}', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            showStatus('success', result.message);
+            // Redirect to themes page after 2 seconds
+            setTimeout(() => {
+                window.location.href = '{{ Url::link("admin/themes") }}';
+            }, 2000);
+        }
+        else {
+            showStatus('error', result.message || 'Theme installation failed');
+            installBtn.disabled = false;
+            installBtn.textContent = 'Install Now';
+        }
+    }
+    catch (error) {
+        showStatus('error', 'Failed to upload theme. Please try again.');
+        installBtn.disabled = false;
+        installBtn.textContent = 'Install Now';
+    }
+});
+
+function showStatus(type, message) {
+    uploadStatus.style.display = 'block';
+    uploadStatus.className = 'alert alert-' + type;
+    uploadStatus.textContent = message;
+}
+</script>
 @endsection

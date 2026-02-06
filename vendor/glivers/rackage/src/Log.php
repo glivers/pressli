@@ -1,8 +1,5 @@
 <?php namespace Rackage;
 
-use Rackage\Path;
-use Rackage\Registry;
-
 /**
  * Log Helper
  *
@@ -80,7 +77,7 @@ use Rackage\Registry;
  *   ]);
  *
  *   // Custom log file
- *   Log::to('security.log')->warning('Failed login attempt', [
+ *   Log::to('security.log')->log('warning', 'Failed login attempt', [
  *       'email' => Input::post('email'),
  *       'ip' => Request::ip(),
  *       'user_agent' => Request::agent()
@@ -112,6 +109,10 @@ use Rackage\Registry;
  * @license http://opensource.org/licenses/MIT MIT License
  * @version 2.0.1
  */
+
+
+use Rackage\Path;
+use Rackage\Registry;
 
 class Log {
 
@@ -356,59 +357,28 @@ class Log {
 	}
 
 	/**
-	 * Instance: Log error to custom file
+	 * Write log entry to custom file
 	 *
-	 * Same as static error() but writes to custom file set via to().
+	 * Instance method for writing log entries to custom file set via to().
+	 * Accepts log level as first parameter for flexibility.
 	 *
-	 * @param string $message Error message
+	 * Usage:
+	 *   Log::to('security.log')->log('error', 'Brute force detected', ['ip' => $ip]);
+	 *   Log::to('cron.log')->log('info', 'Backup completed', ['size_mb' => $size]);
+	 *   Log::to('stripe.log')->log('warning', 'Webhook failed', ['signature' => $sig]);
+	 *
+	 *   // Dynamic level
+	 *   $level = $critical ? 'error' : 'warning';
+	 *   Log::to('app.log')->log($level, 'Event occurred');
+	 *
+	 * @param string $level Log level (error, warning, info, debug)
+	 * @param string $message Log message
 	 * @param array $context Additional context data
 	 * @return void
 	 */
-	public function error($message, $context = [])
+	public function log($level, $message, $context = [])
 	{
-		$this->writeInstance('error', $message, $context);
-	}
-
-	/**
-	 * Instance: Log warning to custom file
-	 *
-	 * Same as static warning() but writes to custom file set via to().
-	 *
-	 * @param string $message Warning message
-	 * @param array $context Additional context data
-	 * @return void
-	 */
-	public function warning($message, $context = [])
-	{
-		$this->writeInstance('warning', $message, $context);
-	}
-
-	/**
-	 * Instance: Log info to custom file
-	 *
-	 * Same as static info() but writes to custom file set via to().
-	 *
-	 * @param string $message Info message
-	 * @param array $context Additional context data
-	 * @return void
-	 */
-	public function info($message, $context = [])
-	{
-		$this->writeInstance('info', $message, $context);
-	}
-
-	/**
-	 * Instance: Log debug to custom file
-	 *
-	 * Same as static debug() but writes to custom file set via to().
-	 *
-	 * @param string $message Debug message
-	 * @param array $context Additional context data
-	 * @return void
-	 */
-	public function debug($message, $context = [])
-	{
-		$this->writeInstance('debug', $message, $context);
+		$this->writeInstance($level, $message, $context);
 	}
 
 	// ===========================================================================

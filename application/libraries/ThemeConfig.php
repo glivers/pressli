@@ -29,6 +29,9 @@
  * @license http://opensource.org/licenses/MIT MIT License
  * @version 0.0.1
  */
+
+use Rackage\Log;
+
 class ThemeConfig
 {
     /**
@@ -108,10 +111,16 @@ class ThemeConfig
      * Providers listed in theme.json under templates.{type}.data_providers.
      * For pages, variant parameter is REQUIRED (default, full-width, landing, etc.).
      *
+     * FALLBACK BEHAVIOR:
+     * - If requested variant missing → tries 'default' variant
+     * - If 'default' missing → returns [] and logs warning
+     * - Prevents crashes when switching themes with different templates
+     *
      * EXAMPLES:
      * - getProviders('post') → ['post_categories', 'recent_posts', 'popular_posts']
      * - getProviders('page', 'default') → ['recent_posts', 'categories']
      * - getProviders('page', 'landing') → ['site_menus']
+     * - getProviders('page', 'missing') → falls back to 'default' variant
      *
      * @param string $templateType Template type (post, page, archive, etc.)
      * @param string $variant Template variant - REQUIRED for pages
@@ -127,7 +136,28 @@ class ThemeConfig
 
         // For pages, variant is REQUIRED
         if ($templateType === 'page') {
-            return $template[$variant]['data_providers'];
+            // Check if requested variant exists
+            if (!isset($template[$variant])) {
+                // Log::warning("Template variant '{$variant}' not found in active theme, using fallback", [
+                //     'type' => $templateType,
+                //     'requested_variant' => $variant,
+                //     'theme' => $this->themeName
+                // ]);
+
+                // Fall back to 'default' variant
+                if (isset($template['default'])) {
+                    return $template['default']['data_providers'];
+                }
+
+                // // No default variant - theme is misconfigured
+                // Log::error("Theme missing 'default' page template - this should be validated during activation", [
+                //     'theme' => $this->themeName
+                // ]);
+
+                return [];
+            }
+
+            return $template[$variant]['data_providers'] ?? [];
         }
 
         // For other types (post, archive, 404, home) - direct access
@@ -141,9 +171,14 @@ class ThemeConfig
      * Path is relative to theme directory (e.g., 'templates/page.php', 'templates/page-full-width.php').
      * For pages, variant parameter is REQUIRED (default, full-width, landing, etc.).
      *
+     * FALLBACK BEHAVIOR:
+     * - If requested variant missing → tries 'default' variant
+     * - If 'default' missing → returns null and logs warning
+     * - Prevents crashes when switching themes with different templates
+     *
      * @param string $templateType Template type (post, page, archive, etc.)
      * @param string $variant Template variant - REQUIRED for pages
-     * @return string Template path
+     * @return string|null Template path
      */
     public function getTemplate($templateType, $variant = null)
     {
@@ -155,7 +190,28 @@ class ThemeConfig
 
         // For pages, variant is REQUIRED
         if ($templateType === 'page') {
-            return $template[$variant]['template'];
+            // Check if requested variant exists
+            if (!isset($template[$variant])) {
+                // Log::warning("Template variant '{$variant}' not found in active theme, using fallback", [
+                //     'type' => $templateType,
+                //     'requested_variant' => $variant,
+                //     'theme' => $this->themeName
+                // ]);
+
+                // Fall back to 'default' variant
+                if (isset($template['default'])) {
+                    return $template['default']['template'];
+                }
+
+                // No default variant - theme is misconfigured
+                // Log::error("Theme missing 'default' page template - this should be validated during activation", [
+                //     'theme' => $this->themeName
+                // ]);
+
+                return null;
+            }
+
+            return $template[$variant]['template'] ?? null;
         }
 
         // For other types (post, archive, 404, home) - direct access

@@ -917,7 +917,8 @@ class FileHandler {
         foreach ($items as $item) {
             if ($item->isDir()) {
                 @rmdir($item->getRealPath());
-            } else {
+            } 
+            else {
                 @unlink($item->getRealPath());
             }
         }
@@ -962,7 +963,8 @@ class FileHandler {
                     $files[] = $file->getPathname();
                 }
             }
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
             return FileResponse::error("Failed to read directory: {$e->getMessage()}", $path);
         }
 
@@ -1001,7 +1003,8 @@ class FileHandler {
                     $files[] = $file->getPathname();
                 }
             }
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
             return FileResponse::error("Failed to read directory: {$e->getMessage()}", $path);
         }
 
@@ -1038,7 +1041,8 @@ class FileHandler {
                     $directories[] = $dir->getPathname();
                 }
             }
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
             return FileResponse::error("Failed to read directory: {$e->getMessage()}", $path);
         }
 
@@ -1120,7 +1124,8 @@ class FileHandler {
             // Remove leading/trailing slashes except for first segment
             if (empty($result)) {
                 $result[] = rtrim($path, '/\\');
-            } else {
+            } 
+            else {
                 $result[] = trim($path, '/\\');
             }
         }
@@ -1167,7 +1172,8 @@ class FileHandler {
                 if (!empty($result)) {
                     array_pop($result);
                 }
-            } else {
+            } 
+            else {
                 $result[] = $part;
             }
         }
@@ -1299,7 +1305,8 @@ class FileHandler {
                     $totalSize += $file->getSize();
                 }
             }
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
             return FileResponse::error("Failed to calculate size: {$e->getMessage()}", $path);
         }
 
@@ -1342,11 +1349,13 @@ class FileHandler {
 
                 if ($item->isDir()) {
                     @mkdir($target);
-                } else {
+                } 
+                else {
                     @copy($item, $target);
                 }
             }
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
             return FileResponse::error("Failed to copy directory: {$e->getMessage()}", $source);
         }
 

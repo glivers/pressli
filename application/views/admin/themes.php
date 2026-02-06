@@ -7,13 +7,13 @@
             <div class="content-header">
                 <h1 class="page-title">Themes</h1>
                 <div class="header-actions-group">
-                    <button class="btn btn-primary">
+                    <a href="{{ Url::link('admin/themes/add') }}" class="btn btn-primary">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
                         Add New Theme
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -78,12 +78,15 @@
                                         <circle cx="12" cy="8" r="1" fill="currentColor" stroke="none"></circle>
                                     </svg>
                                 </button>
-                                <button class="theme-action-btn danger" title="Delete Theme">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                    </svg>
-                                </button>
+                                <form method="POST" action="{{ Url::link('admin/themes/delete', $theme['name']) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this theme? This action cannot be undone.');">
+                                    {{{ Csrf::field() }}}
+                                    <button type="submit" class="theme-action-btn danger" title="Delete Theme">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        </svg>
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
