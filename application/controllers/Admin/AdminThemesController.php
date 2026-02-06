@@ -1,14 +1,16 @@
 <?php namespace Controllers\Admin;
 
-use Lib\ThemeConfig;
-use Models\SettingModel;
-use Rackage\Input;
-use Rackage\Path;
-use Rackage\Redirect;
-use Rackage\Session;
-use Rackage\View;
-use Rackage\Csrf;
 use Rackage\Log;
+use Rackage\Csrf;
+use Rackage\File;
+use Rackage\Path;
+use Rackage\View;
+use Rackage\Input;
+use Rackage\Upload;
+use Lib\ThemeConfig;
+use Rackage\Session;
+use Rackage\Redirect;
+use Models\SettingModel;
 use Controllers\Admin\AdminController;
 
 /**
@@ -94,6 +96,39 @@ class AdminThemesController extends AdminController
     }
 
     /**
+     * Display add theme page
+     *
+     * Shows theme upload interface and marketplace directory.
+     * Upload section allows manual theme installation via ZIP file.
+     * Marketplace shows available themes from directory (currently dummy data).
+     *
+     * @return void
+     */
+    public function getAdd()
+    {
+        $data = [
+            'title' => 'Add New Theme',
+            'settings' => $this->settings
+        ];
+
+        View::render('admin/themes-add', $data);
+    }
+
+    /**
+     * Redirect GET requests for activation to themes page
+     *
+     * Handles browser reload after POST activation.
+     * Activation is POST-only, so GET requests are redirected.
+     *
+     * @param string $themeName Theme directory name (unused)
+     * @return void
+     */
+    public function getActivate($themeName = null)
+    {
+        Redirect::to('admin/themes/index');
+    }
+
+    /**
      * Activate a theme
      *
      * Sets the specified theme as active in settings table.
@@ -108,9 +143,17 @@ class AdminThemesController extends AdminController
         // Validate theme exists and has valid configuration
         try {
             $config = ThemeConfig::load($themeName);
-        } 
+        }
         catch (\Exception $e) {
             Session::flash('error', 'Cannot activate theme: ' . $e->getMessage());
+            Redirect::to('admin/themes/index');
+            return;
+        }
+
+        // Validate theme has required 'default' page template
+        $pageTemplates = $config->getPageTemplates();
+        if (!isset($pageTemplates['default'])) {
+            Session::flash('error', 'Cannot activate theme: Missing required "default" page template in theme.json');
             Redirect::to('admin/themes/index');
             return;
         }
@@ -123,6 +166,89 @@ class AdminThemesController extends AdminController
         Session::flash('success', "Theme '{$meta['name']}' has been activated successfully!");
 
         // Redirect back to themes page
+        Redirect::to('admin/themes/index');
+    }
+
+    /**
+     * Redirect GET requests for deletion to themes page
+     *
+     * Handles browser reload after POST deletion.
+     * Deletion is POST-only, so GET requests are redirected.
+     *
+     * @param string $themeRoot Theme root directory name (unused)
+     * @return void
+     */
+    public function getDelete($themeRoot = null)
+    {
+        Redirect::to('admin/themes/index');
+    }
+
+    /**
+     * Delete a theme
+     *
+     * Removes theme from both themes/ and public/themes/ directories.
+     * Cannot delete active theme (must deactivate first).
+     * Cannot delete last remaining theme (at least one must exist).
+     *
+     * @param string $themeRoot Theme root directory name (PSR-4 namespace segment)
+     * @return void
+     */
+    public function postDelete($themeRoot)
+    {
+        // Get active theme
+        $activeTheme = SettingModel::get('active_theme');
+
+        // Cannot delete active theme
+        if ($themeRoot === $activeTheme) {
+            Session::flash('error', 'Cannot delete active theme. Please activate a different theme first.');
+            Redirect::to('admin/themes/index');
+            return;
+        }
+
+        // Get all available themes
+        $allThemes = $this->discoverThemes();
+
+        // Cannot delete last theme
+        if (count($allThemes) <= 1) {
+            Session::flash('error', 'Cannot delete the last remaining theme. At least one theme must be installed.');
+            Redirect::to('admin/themes/index');
+            return;
+        }
+
+        // Verify theme exists
+        $themeDir = Path::base() . 'themes' . DIRECTORY_SEPARATOR . $themeRoot;
+        if (!is_dir($themeDir)) {
+            Session::flash('error', 'Theme not found: ' . $themeRoot);
+            Redirect::to('admin/themes/index');
+            return;
+        }
+
+        try {
+            // Get theme name for success message
+            $themeJsonPath = $themeDir . DIRECTORY_SEPARATOR . 'theme.json';
+            $themeName = 'Unknown';
+            if (file_exists($themeJsonPath)) {
+                $themeConfig = json_decode(file_get_contents($themeJsonPath), true);
+                $themeName = $themeConfig['name'] ?? $themeRoot;
+            }
+
+            // Delete theme directory
+            File::deleteDir($themeDir);
+
+            // Delete public assets directory
+            $publicThemeDir = Path::base() . 'public' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $themeRoot;
+            if (is_dir($publicThemeDir)) {
+                File::deleteDir($publicThemeDir);
+            }
+
+            Log::info('Theme deleted', ['root' => $themeRoot, 'name' => $themeName]);
+            Session::flash('success', "Theme '{$themeName}' has been deleted successfully!");
+        }
+        catch (\Exception $e) {
+            Log::error('Theme deletion failed', ['root' => $themeRoot, 'error' => $e->getMessage()]);
+            Session::flash('error', 'Failed to delete theme: ' . $e->getMessage());
+        }
+
         Redirect::to('admin/themes/index');
     }
 
@@ -597,5 +723,341 @@ class AdminThemesController extends AdminController
 
         Session::flash('success', 'Theme customizations reset to defaults. Site identity (logo, title) preserved.');
         Redirect::to('admin/themes/customize/' . $themeName);
+    }
+
+    /**
+     * Upload and install a theme from ZIP file
+     *
+     * Accepts ZIP upload, extracts to temp directory, validates theme structure
+     * (theme.json required in root), copies all theme files to themes/{name}/
+     * and public assets to public/themes/{name}/. Cleans up temp files after.
+     *
+     * Validation:
+     * - ZIP file required
+     * - theme.json must exist in root of ZIP (no subdirectories)
+     * - Theme name extracted from theme.json
+     * - Duplicate theme names rejected
+     *
+     * Copy Structure:
+     * - themes/{name}/ gets ALL files (complete theme package)
+     * - public/themes/{name}/ gets ONLY public/* contents (assets)
+     *
+     * @return void Returns JSON response
+     */
+    public function postUpload()
+    {
+        // Verify CSRF token
+        if (!Csrf::verify()) {
+            View::json(['success' => false, 'message' => 'Invalid security token'], 403);
+            return;
+        }
+
+        // Upload ZIP file
+        $upload = Upload::file('theme_file')
+            ->allowedTypes(['zip'])
+            ->maxSize(10 * 1024 * 1024)
+            ->path('vault/tmp')
+            ->save();
+
+        if (!$upload->success) {
+            View::json(['success' => false, 'message' => $upload->errorMessage], 400);
+            return;
+        }
+
+        $tempDir = Path::vault() . 'tmp' . DIRECTORY_SEPARATOR . 'theme_' . uniqid();
+        File::makeDir($tempDir);
+
+        try {
+            // Extract ZIP file
+            $zip = new \ZipArchive();
+            if ($zip->open($upload->fullPath) !== true) {
+                throw new \Exception('Failed to open ZIP file');
+            }
+
+            $zip->extractTo($tempDir);
+            $zip->close();
+
+            // Delete uploaded ZIP file
+            unlink($upload->fullPath);
+
+            // Check if theme.json exists in root
+            $themeJsonPath = $tempDir . DIRECTORY_SEPARATOR . 'theme.json';
+
+            // If not in root, check for single wrapper directory (common ZIP structure)
+            if (!file_exists($themeJsonPath)) {
+                $contents = array_diff(scandir($tempDir), ['.', '..']);
+
+                // If exactly one item and it's a directory, check inside it
+                if (count($contents) === 1) {
+                    $subdir = $tempDir . DIRECTORY_SEPARATOR . reset($contents);
+                    if (is_dir($subdir)) {
+                        $wrappedJsonPath = $subdir . DIRECTORY_SEPARATOR . 'theme.json';
+                        if (file_exists($wrappedJsonPath)) {
+                            // Unwrap: move everything from subdir to tempDir
+                            $files = array_diff(scandir($subdir), ['.', '..']);
+                            foreach ($files as $file) {
+                                rename(
+                                    $subdir . DIRECTORY_SEPARATOR . $file,
+                                    $tempDir . DIRECTORY_SEPARATOR . $file
+                                );
+                            }
+                            rmdir($subdir);
+                            $themeJsonPath = $tempDir . DIRECTORY_SEPARATOR . 'theme.json';
+                        }
+                    }
+                }
+            }
+
+            // Final validation: theme.json must exist
+            if (!file_exists($themeJsonPath)) {
+                throw new \Exception('Invalid theme: theme.json not found in ZIP root or single wrapper directory');
+            }
+
+            // Load and validate theme.json
+            $themeConfig = json_decode(file_get_contents($themeJsonPath), true);
+            if (!$themeConfig || !isset($themeConfig['name'])) {
+                throw new \Exception('Invalid theme.json: missing "name" field');
+            }
+
+            // Validate root field exists (PSR-4 namespace segment)
+            if (!isset($themeConfig['root'])) {
+                throw new \Exception('Invalid theme.json: missing "root" field (theme directory name for PSR-4 autoloading)');
+            }
+
+            $root = $themeConfig['root'];
+
+            // Validate root is PSR-4 compatible (PascalCase)
+            if (!preg_match('/^[A-Z][a-zA-Z0-9]*$/', $root)) {
+                throw new \Exception('Invalid root: must be PascalCase (e.g., "Bota", "MinimalTheme") for PSR-4 autoloading');
+            }
+
+            // Check if theme already exists
+            $themeDir = Path::base() . 'themes' . DIRECTORY_SEPARATOR . $root;
+            if (file_exists($themeDir)) {
+                throw new \Exception('Theme already exists: ' . $root);
+            }
+
+            // Create theme directories
+            $publicThemeDir = Path::base() . 'public' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $root;
+            File::makeDir($themeDir);
+            File::makeDir($publicThemeDir);
+
+            // Copy ALL theme files to themes/{root}/
+            File::copyDir($tempDir, $themeDir);
+
+            // Copy assets CONTENTS directly to public/themes/{root}/
+            // Result: themes/Bota/assets/css/ → public/themes/Bota/css/ (not /assets/css/)
+            $sourceAssetsDir = $tempDir . DIRECTORY_SEPARATOR . 'assets';
+            if (is_dir($sourceAssetsDir)) {
+                File::copyDir($sourceAssetsDir, $publicThemeDir);
+            }
+
+            // Clean up temp directory
+            File::deleteDir($tempDir);
+
+            Log::info('Theme installed successfully', ['root' => $root, 'name' => $themeConfig['name']]);
+
+            View::json([
+                'success' => true,
+                'message' => 'Theme installed successfully: ' . $themeConfig['name']
+            ]);
+        }
+        catch (\Exception $e) {
+            // Clean up on error
+            if (isset($tempDir) && is_dir($tempDir)) {
+                File::deleteDir($tempDir);
+            }
+            if (isset($themeDir) && is_dir($themeDir)) {
+                File::deleteDir($themeDir);
+            }
+            if (isset($publicThemeDir) && is_dir($publicThemeDir)) {
+                File::deleteDir($publicThemeDir);
+            }
+
+            Log::error('Theme installation failed', ['error' => $e->getMessage()]);
+
+            View::json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Update an existing theme
+     *
+     * Uploads new theme ZIP, validates it matches the existing theme (same root),
+     * backs up current version, and overwrites with new files.
+     * Used for theme updates from theme details page.
+     *
+     * @param string $themeRoot Theme root directory name to update
+     * @return void Returns JSON response
+     */
+    public function postUpdate($themeRoot)
+    {
+        // Verify CSRF token
+        if (!Csrf::verify()) {
+            View::json(['success' => false, 'message' => 'Invalid security token'], 403);
+            return;
+        }
+
+        // Verify theme exists
+        $themeDir = Path::base() . 'themes' . DIRECTORY_SEPARATOR . $themeRoot;
+        if (!is_dir($themeDir)) {
+            View::json(['success' => false, 'message' => 'Theme not found: ' . $themeRoot], 404);
+            return;
+        }
+
+        // Get current version for comparison
+        $currentThemeJson = $themeDir . DIRECTORY_SEPARATOR . 'theme.json';
+        $currentConfig = json_decode(file_get_contents($currentThemeJson), true);
+        $currentVersion = $currentConfig['version'] ?? 'unknown';
+
+        // Upload ZIP file
+        $upload = Upload::file('theme_file')
+            ->allowedTypes(['zip'])
+            ->maxSize(10 * 1024 * 1024)
+            ->path('vault/tmp')
+            ->save();
+
+        if (!$upload->success) {
+            View::json(['success' => false, 'message' => $upload->errorMessage], 400);
+            return;
+        }
+
+        $tempDir = Path::vault() . 'tmp' . DIRECTORY_SEPARATOR . 'theme_update_' . uniqid();
+        File::makeDir($tempDir);
+
+        try {
+            // Extract ZIP file
+            $zip = new \ZipArchive();
+            if ($zip->open($upload->fullPath) !== true) {
+                throw new \Exception('Failed to open ZIP file');
+            }
+
+            $zip->extractTo($tempDir);
+            $zip->close();
+
+            // Delete uploaded ZIP file
+            unlink($upload->fullPath);
+
+            // Check if theme.json exists in root or unwrap single directory
+            $themeJsonPath = $tempDir . DIRECTORY_SEPARATOR . 'theme.json';
+
+            if (!file_exists($themeJsonPath)) {
+                $contents = array_diff(scandir($tempDir), ['.', '..']);
+
+                if (count($contents) === 1) {
+                    $subdir = $tempDir . DIRECTORY_SEPARATOR . reset($contents);
+                    if (is_dir($subdir)) {
+                        $wrappedJsonPath = $subdir . DIRECTORY_SEPARATOR . 'theme.json';
+                        if (file_exists($wrappedJsonPath)) {
+                            $files = array_diff(scandir($subdir), ['.', '..']);
+                            foreach ($files as $file) {
+                                rename(
+                                    $subdir . DIRECTORY_SEPARATOR . $file,
+                                    $tempDir . DIRECTORY_SEPARATOR . $file
+                                );
+                            }
+                            rmdir($subdir);
+                            $themeJsonPath = $tempDir . DIRECTORY_SEPARATOR . 'theme.json';
+                        }
+                    }
+                }
+            }
+
+            if (!file_exists($themeJsonPath)) {
+                throw new \Exception('Invalid theme: theme.json not found in ZIP root or single wrapper directory');
+            }
+
+            // Load and validate new theme.json
+            $newConfig = json_decode(file_get_contents($themeJsonPath), true);
+            if (!$newConfig || !isset($newConfig['name'])) {
+                throw new \Exception('Invalid theme.json: missing "name" field');
+            }
+
+            if (!isset($newConfig['root'])) {
+                throw new \Exception('Invalid theme.json: missing "root" field');
+            }
+
+            $newRoot = $newConfig['root'];
+
+            // Validate root matches (can't change theme identity)
+            if ($newRoot !== $themeRoot) {
+                throw new \Exception("Theme mismatch: Update is for '{$newRoot}' but trying to update '{$themeRoot}'");
+            }
+
+            // Validate PSR-4 format
+            if (!preg_match('/^[A-Z][a-zA-Z0-9]*$/', $newRoot)) {
+                throw new \Exception('Invalid root: must be PascalCase for PSR-4 autoloading');
+            }
+
+            $newVersion = $newConfig['version'] ?? 'unknown';
+
+            // Backup current theme
+            $backupDir = Path::vault() . 'backups' . DIRECTORY_SEPARATOR . 'themes';
+            File::makeDir($backupDir);
+            $backupPath = $backupDir . DIRECTORY_SEPARATOR . $themeRoot . '-' . date('Y-m-d-His');
+            File::copyDir($themeDir, $backupPath);
+
+            // Also backup public assets
+            $publicThemeDir = Path::base() . 'public' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $themeRoot;
+            if (is_dir($publicThemeDir)) {
+                $publicBackupPath = $backupPath . '-public';
+                File::copyDir($publicThemeDir, $publicBackupPath);
+            }
+
+            // Delete current theme files (but keep directory structure)
+            $files = array_diff(scandir($themeDir), ['.', '..']);
+            foreach ($files as $file) {
+                $filePath = $themeDir . DIRECTORY_SEPARATOR . $file;
+                if (is_dir($filePath)) {
+                    File::deleteDir($filePath);
+                }
+                else {
+                    unlink($filePath);
+                }
+            }
+
+            // Copy new theme files
+            File::copyDir($tempDir, $themeDir);
+
+            // Update public assets
+            if (is_dir($publicThemeDir)) {
+                File::deleteDir($publicThemeDir);
+            }
+            File::makeDir($publicThemeDir);
+
+            // Copy assets CONTENTS directly to public/themes/{root}/
+            $sourceAssetsDir = $tempDir . DIRECTORY_SEPARATOR . 'assets';
+            if (is_dir($sourceAssetsDir)) {
+                File::copyDir($sourceAssetsDir, $publicThemeDir);
+            }
+
+            // Clean up temp directory
+            File::deleteDir($tempDir);
+
+            Log::info('Theme updated successfully', [
+                'root' => $themeRoot,
+                'name' => $newConfig['name'],
+                'old_version' => $currentVersion,
+                'new_version' => $newVersion,
+                'backup' => $backupPath
+            ]);
+
+            View::json([
+                'success' => true,
+                'message' => "Theme updated successfully from v{$currentVersion} to v{$newVersion}",
+                'old_version' => $currentVersion,
+                'new_version' => $newVersion
+            ]);
+        }
+        catch (\Exception $e) {
+            // Clean up on error
+            if (isset($tempDir) && is_dir($tempDir)) {
+                File::deleteDir($tempDir);
+            }
+
+            Log::error('Theme update failed', ['root' => $themeRoot, 'error' => $e->getMessage()]);
+
+            View::json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 }
