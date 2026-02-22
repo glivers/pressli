@@ -28,7 +28,7 @@ use Controllers\Admin\AdminController;
  * @license http://opensource.org/licenses/MIT MIT License
  * @version 0.0.1
  */
-class AdminThemesController extends AdminController
+class ThemesController extends AdminController
 {
     /**
      * Display all available themes

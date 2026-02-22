@@ -30,7 +30,7 @@ use Controllers\Admin\AdminController;
  * @license http://opensource.org/licenses/MIT MIT License
  * @version 0.0.1
  */
-class AdminUsersController extends AdminController
+class UsersController extends AdminController
 {
     /**
      * Display list of all users with role filtering

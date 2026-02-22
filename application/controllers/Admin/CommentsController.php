@@ -21,7 +21,7 @@ use Lib\Exceptions\ServiceException;
  * @license http://opensource.org/licenses/MIT MIT License
  * @version 0.0.1
  */
-class AdminCommentsController extends AdminController
+class CommentsController extends AdminController
 {
     /**
      * Display comments list with filtering

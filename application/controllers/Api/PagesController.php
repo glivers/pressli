@@ -32,7 +32,7 @@ use Lib\Services\Page;
 use Controllers\Api\ApiController;
 use Lib\Exceptions\ServiceException;
 
-class ApiPagesController extends ApiController
+class PagesController extends ApiController
 {
     /**
      * List all pages with optional status filter

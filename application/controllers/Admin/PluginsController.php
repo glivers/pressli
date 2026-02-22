@@ -30,7 +30,7 @@ use Controllers\Admin\AdminController;
  * @license http://opensource.org/licenses/MIT MIT License
  * @version 0.0.1
  */
-class AdminPluginsController extends AdminController
+class PluginsController extends AdminController
 {
     /**
      * Display list of all installed plugins

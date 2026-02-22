@@ -21,7 +21,7 @@ use Lib\Exceptions\ServiceException;
  * @license http://opensource.org/licenses/MIT MIT License
  * @version 0.0.1
  */
-class AdminMediaController extends AdminController
+class MediaController extends AdminController
 {
     /**
      * Display media library

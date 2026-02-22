@@ -31,7 +31,7 @@ use Lib\Services\Taxonomy;
 use Controllers\Api\ApiController;
 use Lib\Exceptions\ServiceException;
 
-class ApiCategoriesController extends ApiController
+class CategoriesController extends ApiController
 {
     /**
      * List all categories with metadata

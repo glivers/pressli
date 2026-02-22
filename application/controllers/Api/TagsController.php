@@ -31,7 +31,7 @@ use Lib\Services\Taxonomy;
 use Controllers\Api\ApiController;
 use Lib\Exceptions\ServiceException;
 
-class ApiTagsController extends ApiController
+class TagsController extends ApiController
 {
     /**
      * List all tags

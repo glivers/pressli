@@ -30,7 +30,7 @@ use Lib\Exceptions\ServiceException;
  * @license http://opensource.org/licenses/MIT MIT License
  * @version 0.0.1
  */
-class AdminPostsController extends AdminController
+class PostsController extends AdminController
 {
     /**
      * Display list of all posts with status filtering

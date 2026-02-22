@@ -30,7 +30,7 @@ use Lib\LibException;
 use Lib\Services\Taxonomy;
 use Controllers\Admin\AdminController;
 
-class AdminCategoriesController extends AdminController
+class CategoriesController extends AdminController
 {
     /**
      * Display list of all categories

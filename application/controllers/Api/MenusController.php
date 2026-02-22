@@ -36,7 +36,7 @@ use Lib\Services\Menu;
 use Controllers\Api\ApiController;
 use Lib\Exceptions\ServiceException;
 
-class ApiMenusController extends ApiController
+class MenusController extends ApiController
 {
     /**
      * List all menus with item counts

@@ -32,7 +32,7 @@ use Lib\Services\Media;
 use Controllers\Api\ApiController;
 use Lib\Exceptions\ServiceException;
 
-class ApiMediaController extends ApiController
+class MediaController extends ApiController
 {
     /**
      * List all media with optional type filter
