@@ -1,5 +1,7 @@
 <?php namespace Lib;
 
+use Rackage\View;
+
 /**
  * Base Plugin Class
  *
@@ -318,6 +320,54 @@ abstract class Plugin
     public function getPath()
     {
         return $this->path;
+    }
+
+    /**
+     * Handle admin panel requests for this plugin
+     *
+     * Called by AdminPluginsController::getManage() and postManage() after
+     * prepending the plugin's templates directory to view_paths. The plugin
+     * receives the HTTP method and up to three URL parameters, then routes
+     * the request however it sees fit.
+     *
+     * For GET requests the method must return an HTML string (via View::get()).
+     * For POST requests the method should handle its own response (View::json()
+     * or Redirect::to()) and return nothing.
+     *
+     * URL:  /admin/plugins/manage/{slug}/{param1}/{param2}/{param3}
+     * Call: $plugin->admin('get', 'vendors', 'edit', '5')
+     *
+     * @param string      $method  HTTP method in lowercase ('get' or 'post')
+     * @param string|null $param1  First URL segment after the slug
+     * @param string|null $param2  Second URL segment
+     * @param string|null $param3  Third URL segment
+     * @return string|void HTML string for GET requests; nothing for POST
+     */
+    public function admin($method, $param1 = null, $param2 = null, $param3 = null)
+    {
+        // Override in plugin to handle admin requests
+        return '';
+    }
+
+    /**
+     * Handle API requests for this plugin
+     *
+     * Called by ApiPluginController after verifying the Bearer token.
+     * The plugin receives the HTTP method and up to two URL parameters,
+     * then handles the request and returns a JSON response via View::json().
+     *
+     * URL:  /api/plugin/{slug}/{param1}/{param2}
+     * Call: $plugin->api('post', 'vendors', null)
+     *
+     * @param string      $method  HTTP method in lowercase
+     * @param string|null $param1  First URL segment after the slug
+     * @param string|null $param2  Second URL segment
+     * @return void Responds via View::json()
+     */
+    public function api($method, $param1 = null, $param2 = null)
+    {
+        // Override in plugin to handle API requests
+        View::json(['error' => 'Not implemented'], 501);
     }
 
     /**
