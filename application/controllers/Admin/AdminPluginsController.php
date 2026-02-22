@@ -7,6 +7,7 @@ use Rackage\File;
 use Rackage\Upload;
 use Rackage\Session;
 use Rackage\Redirect;
+use Rackage\Registry;
 use Lib\PluginManager;
 use Models\PluginModel;
 use Controllers\Admin\AdminController;
@@ -309,6 +310,80 @@ class AdminPluginsController extends AdminController
             'message' => 'Plugin installed successfully: ' . $config['name'],
             'plugin' => $config
         ]);
+    }
+
+    /**
+     * Dispatch GET requests into a plugin's admin panel
+     *
+     * Prepends the plugin's views directory to view_paths so @extends and
+     * @include resolve against the plugin first, falling back to application/views.
+     * The plugin receives the HTTP method and URL params and interprets them
+     * however it likes — it must return an HTML string.
+     *
+     * URL: /admin/plugins/manage/{slug}/{p1}/{p2}/{p3}
+     *
+     * @param string      $slug Plugin slug (e.g. "directory")
+     * @param string|null $param1   First URL segment after slug
+     * @param string|null $param2   Second URL segment
+     * @param string|null $param3   Third URL segment
+     * @return void
+     */
+    public function getManage($slug, $param1 = null, $param2 = null, $param3 = null)
+    {
+        $namespace = str_replace('-', '', ucwords($slug, '-'));
+        $class = 'Plugins\\' . $namespace . '\\' . $namespace . 'Plugin';
+
+        if (!class_exists($class)) {
+            View::error(404);
+            return;
+        }
+
+        $settings = $this->settings;
+        $viewPaths = $settings['view_paths'] ?? [];
+        $settings['view_paths'] = array_merge(['plugins/' . $namespace . '/templates'], $viewPaths);
+        Registry::setSettings($settings);
+
+        $plugin = new $class();
+        $content = $plugin->admin('get', $param1, $param2, $param3);
+
+        View::render('admin/plugins-manage', [
+            'title'    => $plugin->getName(),
+            'slug'     => $slug,
+            'content'  => $content,
+            'settings' => $this->settings
+        ]);
+    }
+
+    /**
+     * Dispatch POST requests into a plugin's admin panel
+     *
+     * Same view_paths prepend as getManage(). The plugin handles its own
+     * response for POST (View::json() or Redirect::to()) so nothing is
+     * returned or wrapped here.
+     *
+     * @param string      $slug Plugin slug
+     * @param string|null $param1   First URL segment after slug
+     * @param string|null $param2   Second URL segment
+     * @param string|null $param3   Third URL segment
+     * @return void
+     */
+    public function postManage($slug, $param1 = null, $param2 = null, $param3 = null)
+    {
+        $namespace = str_replace('-', '', ucwords($slug, '-'));
+        $class = 'Plugins\\' . $namespace . '\\' . $namespace . 'Plugin';
+
+        if (!class_exists($class)) {
+            View::json(['success' => false, 'message' => 'Plugin not found'], 404);
+            return;
+        }
+
+        $settings = $this->settings;
+        $viewPaths = $settings['view_paths'] ?? [];
+        $settings['view_paths'] = array_merge(['plugins/' . $namespace . '/templates'], $viewPaths);
+        Registry::setSettings($settings);
+
+        $plugin = new $class();
+        $plugin->admin('post', $param1, $param2, $param3);
     }
 
     /**
