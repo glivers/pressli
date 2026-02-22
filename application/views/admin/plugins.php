@@ -45,11 +45,14 @@
                                             @if($plugin['status'] === 'active')
                                                 <button class="plugin-action-link deactivate-plugin" data-id="{{ $plugin['id'] }}" data-name="{{ $plugin['name'] }}">Deactivate</button>
                                                 <span class="plugin-separator">|</span>
-                                            @else
-                                                <button class="plugin-action-link primary activate-plugin" data-id="{{ $plugin['id'] }}" data-name="{{ $plugin['name'] }}">Activate</button>
+                                                <a href="{{ Url::link('admin/plugins/manage/' . $plugin['slug']) }}" class="plugin-action-link primary">Dashboard</a>
                                                 <span class="plugin-separator">|</span>
+                                                <a href="{{ Url::link('admin/plugins/manage/' . $plugin['slug'] . '/settings') }}" class="plugin-action-link">Settings</a>
+                                            @else
+                                                <button class="plugin-action-link primary activate-plugin" data-id="{{ $plugin['id'] }}" data-name="{{ $plugin['name'] }}" data-slug="{{ $plugin['slug'] }}">Activate</button>
+                                                <span class="plugin-separator">|</span>
+                                                <button class="plugin-action-link danger delete-plugin" data-id="{{ $plugin['id'] }}" data-name="{{ $plugin['name'] }}">Delete</button>
                                             @endif
-                                            <button class="plugin-action-link danger delete-plugin" data-id="{{ $plugin['id'] }}" data-name="{{ $plugin['name'] }}">Delete</button>
                                         </div>
                                     </div>
                                     <p class="plugin-description">{{ $plugin['description'] or 'No description available.' }}</p>
@@ -105,11 +108,12 @@
                 });
             });
 
-            // Activate plugin
+            // Activate plugin — on success, go straight to the plugin dashboard
             document.querySelectorAll('.activate-plugin').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    const id = this.dataset.id;
+                    const id   = this.dataset.id;
                     const name = this.dataset.name;
+                    const slug = this.dataset.slug;
 
                     if (!confirm(`Activate plugin: ${name}?`)) return;
 
@@ -123,7 +127,7 @@
                     .then(r => r.json())
                     .then(data => {
                         if (data.success) {
-                            location.reload();
+                            window.location.href = `{{ Url::base() }}admin/plugins/manage/${slug}`;
                         } else {
                             alert(data.message || 'Failed to activate plugin');
                         }

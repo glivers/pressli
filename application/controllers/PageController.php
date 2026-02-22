@@ -273,14 +273,14 @@ class PageController extends Controller
             }
         }
 
-        // STEP 2: Check plugin routes (hash lookup)
+        // STEP 2: Check plugin routes
         $routes = ContentRegistry::getRoutes();
 
-        if (isset($routes[$topLevel])) {
-            $controllerClass = $routes[$topLevel];
-
-            // Instantiate and call plugin controller
-            $pluginController = new $controllerClass();
+        // 2a: Prefix routes — plugin owns a URL namespace, e.g. /jobs/...
+        //     If the top-level segment matches, the plugin must handle it.
+        //     A null result from run() means not found — show 404, do not fall through.
+        if (isset($routes['prefix'][$topLevel])) {
+            $pluginController = new $routes['prefix'][$topLevel]();
             $result = $pluginController->run($slug);
 
             if (!$result) {
@@ -288,26 +288,22 @@ class PageController extends Controller
                 return;
             }
 
-            // Plugin returned data - prepare for rendering
-            $type = $result['type'] ?? 'page';
-            $data = $result['data'] ?? [];
+            $this->renderResult($result);
+            return;
+        }
 
-            // Check if plugin specified template
-            if (isset($result['template'])) {
-                $template = $result['template'];
-            }
-            else {
-                // Ask theme for template based on type
-                $themeName = $this->themeConfig->getName();
-                $template = $this->themeConfig->getTemplate($type);
-                $template = $themeName . '/' . str_replace('.php', '', $template);
-            }
+        // 2b: Root handlers — plugins that inspect any slug and handle or pass.
+        //     Executed in registration order; first non-null result wins.
+        //     All null means no plugin claimed the URL — fall through to DB lookup.
+        foreach ($routes['root'] as $controllerClass) {
+            $pluginController = new $controllerClass();
+            $result = $pluginController->run($slug);
 
-            // Render with plugin data
-            $data['customCSS'] = $this->customCSS;
-            View::render($template, $data);
-            return; 
-        } 
+            if ($result !== null) {
+                $this->renderResult($result);
+                return;
+            }
+        }
 
         // STEP 3: Fetch content (unified query for all types)
         $content = PostModel::select([
@@ -669,6 +665,45 @@ class PageController extends Controller
         $data['customCSS'] = $this->customCSS;
 
         View::render($themeName . '/' . $template, $data);
+    }
+
+    /**
+     * Render a result returned by a plugin controller's run() method
+     *
+     * Plugin controllers return an array from run() with three keys:
+     *   - type:     content type string used to select a theme template (e.g. 'page', 'vendor')
+     *   - data:     associative array of template variables
+     *   - template: (optional) explicit template path; overrides theme template selection
+     *
+     * If the plugin provides a template path it is used directly. Otherwise the active
+     * theme is asked for a template matching the content type, following the same
+     * convention used by renderPost() and renderPage().
+     *
+     * @param array $result Array returned by a plugin controller's run() method
+     * @return void
+     */
+    private function renderResult(array $result)
+    {
+        $type = $result['type'] ?? 'page';
+        $data = $result['data'] ?? [];
+
+        // Inject site metadata — plugins don't have access to siteSettings
+        $data['site'] = [
+            'name'    => $this->siteSettings['site_title']   ?? 'Pressli',
+            'tagline' => $this->siteSettings['site_tagline'] ?? '',
+            'logo'    => $this->siteSettings['site_logo']    ?? null,
+            'favicon' => $this->siteSettings['site_favicon'] ?? null,
+            'url'     => $this->siteSettings['site_url']     ?? 'http://localhost',
+        ];
+
+        $data['customCSS'] = $this->customCSS;
+
+        // Ask the theme for a template matching the content type
+        $themeName = $this->themeConfig->getName();
+        $template  = $this->themeConfig->getTemplate($type);
+        $template  = $themeName . '/' . str_replace('.php', '', $template);
+
+        View::render($template, $data);
     }
 
     /**
