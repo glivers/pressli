@@ -186,4 +186,5 @@ return array(
 	'api/media' 	=> 'Api\ApiMedia',
 	'api/menus' 	=> 'Api\ApiMenus',
 	'api/comments' 	=> 'Api\ApiComments',
+	'api/plugin' 	=> 'Api\ApiPlugin@handle/slug',
 );
