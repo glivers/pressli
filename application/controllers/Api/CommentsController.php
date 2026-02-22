@@ -33,7 +33,7 @@ use Lib\Services\Comment;
 use Controllers\Api\ApiController;
 use Lib\Exceptions\ServiceException;
 
-class ApiCommentsController extends ApiController
+class CommentsController extends ApiController
 {
     /**
      * List all comments with optional status filter

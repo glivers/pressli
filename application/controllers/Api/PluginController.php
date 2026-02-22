@@ -23,7 +23,7 @@ use Controllers\Api\ApiController;
  * @license http://opensource.org/licenses/MIT MIT License
  * @version 1.0.0
  */
-class ApiPluginController extends ApiController
+class PluginController extends ApiController
 {
     /**
      * Dispatch a plugin API request

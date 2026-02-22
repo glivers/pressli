@@ -29,7 +29,7 @@ use Lib\Exceptions\ServiceException;
  * @license http://opensource.org/licenses/MIT MIT License
  * @version 0.0.1
  */
-class AdminTagsController extends AdminController
+class TagsController extends AdminController
 {
     /**
      * Display list of all tags

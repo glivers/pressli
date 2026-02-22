@@ -32,7 +32,7 @@ use Lib\Services\Post;
 use Controllers\Api\ApiController;
 use Lib\Exceptions\ServiceException;
 
-class ApiPostsController extends ApiController
+class PostsController extends ApiController
 {
     /**
      * List all posts with optional status filter

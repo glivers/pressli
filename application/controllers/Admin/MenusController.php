@@ -26,7 +26,7 @@ use Lib\Services\Menu;
 use Controllers\Admin\AdminController;
 use Lib\Exceptions\ServiceException;
 
-class AdminMenusController extends AdminController
+class MenusController extends AdminController
 {
     /**
      * Enable method filters for this controller

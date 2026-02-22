@@ -26,7 +26,7 @@ use Controllers\Admin\AdminController;
  *
  * @package Controllers\Admin
  */
-class AdminToolsController extends AdminController
+class ToolsController extends AdminController
 {
     /**
      * Display tools dashboard

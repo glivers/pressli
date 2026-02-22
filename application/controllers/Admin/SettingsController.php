@@ -22,7 +22,7 @@ use Rackage\Controller;
  * @license http://opensource.org/licenses/MIT MIT License
  * @version 0.0.1
  */
-class AdminSettingsController extends Controller
+class SettingsController extends Controller
 {
     /**
      * Display settings page with all configuration sections

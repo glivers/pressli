@@ -31,7 +31,7 @@ use Lib\Exceptions\ServiceException;
  * @license http://opensource.org/licenses/MIT MIT License
  * @version 0.0.1
  */
-class AdminPagesController extends AdminController
+class PagesController extends AdminController
 {
     /**
      * Display list of all pages
