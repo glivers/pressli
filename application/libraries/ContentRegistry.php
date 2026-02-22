@@ -212,36 +212,48 @@ class ContentRegistry
     /**
      * Get plugin routes for URL routing
      *
-     * Returns flattened array of top-level routes to controller mappings.
-     * Used by PageController to check if a URL segment should be handled by a plugin.
+     * Returns two buckets used by PageController::show() during slug resolution:
      *
-     * Example:
-     *   $routes = ContentRegistry::getRoutes();
-     *   // Returns: ['jobs' => 'Plugins\Jobs\JobsController', 'vendors' => 'Plugins\Directory\VendorsController']
+     * prefix — exact top-level segment to controller class mapping (hash lookup).
+     *   Register by setting 'route' to a URL segment, e.g. 'route' => 'jobs'.
+     *   PageController checks if the first slug segment matches a key here.
+     *   On match: controller->run($slug) is called; null result gives a 404.
      *
-     * Usage:
-     *   $topLevel = explode('/', $slug)[0];
-     *   if (isset($routes[$topLevel])) {
-     *       $controller = $routes[$topLevel];
-     *       // Delegate to plugin
-     *   }
+     * root — ordered list of controller classes that intercept any URL.
+     *   Register by setting 'route' => '*'.
+     *   PageController calls controller->run($slug) on each in turn.
+     *   First non-null result wins; all null means fall through to DB lookup.
      *
-     * @return array Route mappings ['route' => 'ControllerClass']
+     * Resolution order in PageController::show():
+     *   1. Core patterns (category/, tag/)
+     *   2. prefix match  — plugin claims a URL namespace (e.g. /jobs/...)
+     *   3. root handlers — plugins that inspect any slug and handle or pass
+     *   4. DB lookup     — posts/pages table, 404 on miss
+     *
+     * @return array ['prefix' => [segment => ControllerClass], 'root' => [ControllerClass, ...]]
      */
     public static function getRoutes()
     {
-        $routes = [];
+        $prefix = [];
+        $root   = [];
 
-        foreach (self::$types as $type => $config) {
-            $route = $config['route'] ?? null;
+        foreach (self::$types as $config) {
+            $route      = $config['route']      ?? null;
             $controller = $config['controller'] ?? null;
 
-            if ($route && $controller) {
-                $routes[$route] = $controller;
+            if (!$controller) {
+                continue;
+            }
+
+            if ($route === '*') {
+                $root[] = $controller;
+            }
+            elseif ($route) {
+                $prefix[$route] = $controller;
             }
         }
 
-        return $routes;
+        return ['prefix' => $prefix, 'root' => $root];
     }
 
     /**
